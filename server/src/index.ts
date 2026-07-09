@@ -10,7 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import { config } from './config';
 import { db } from './db';
-import { monthLabel } from './months';
+import { monthKeyFromIndex, monthLabel } from './months';
 import { buildSnapshot } from './state';
 import { addClient, broadcast, snapshotFrame } from './events';
 
@@ -239,7 +239,7 @@ api.post('/next-month', requireMember, (_req, res) => {
   db.transaction(() => {
     if (winner) {
       db.prepare(
-        'INSERT INTO history (month, title, author, genre, pages, year, cover_url, tally, runner_up, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO history (month, title, author, genre, pages, year, cover_url, tally, runner_up, created_at, sort_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       ).run(
         monthLabel(club.monthIdx),
         winner.title,
@@ -251,6 +251,7 @@ api.post('/next-month', requireMember, (_req, res) => {
         `${hi}–${lo}`,
         loser ? loser.title : null,
         now,
+        monthKeyFromIndex(club.monthIdx),
       );
     }
     db.prepare('DELETE FROM votes').run();

@@ -32,7 +32,7 @@ export function buildSnapshot(): Snapshot {
 
   const history = db
     .prepare(
-      'SELECT id, month, title, author, genre, pages, year, cover_url AS coverUrl, tally, runner_up AS runnerUp FROM history ORDER BY id DESC',
+      'SELECT id, month, title, author, genre, pages, year, cover_url AS coverUrl, tally, runner_up AS runnerUp FROM history ORDER BY sort_key IS NULL, sort_key DESC, id DESC',
     )
     .all() as HistoryEntry[];
 

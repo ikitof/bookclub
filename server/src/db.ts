@@ -1,4 +1,5 @@
 import { config } from './config';
+import { parseMonthKey } from './months';
 import { db } from './sqlite';
 
 export { db };
@@ -56,7 +57,8 @@ CREATE TABLE IF NOT EXISTS history (
   cover_url  TEXT,
   tally      TEXT NOT NULL,
   runner_up  TEXT,
-  created_at TEXT NOT NULL
+  created_at TEXT NOT NULL,
+  sort_key   INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -65,6 +67,24 @@ CREATE TABLE IF NOT EXISTS sessions (
   created_at TEXT NOT NULL
 );
 `);
+
+// Migration: add history.sort_key to older databases and backfill it from the
+// month label, so records order chronologically regardless of insertion order.
+{
+  const cols = db.prepare('PRAGMA table_info(history)').all() as { name: string }[];
+  if (!cols.some((c) => c.name === 'sort_key')) {
+    db.exec('ALTER TABLE history ADD COLUMN sort_key INTEGER');
+  }
+  const rows = db.prepare('SELECT id, month FROM history WHERE sort_key IS NULL').all() as {
+    id: number;
+    month: string;
+  }[];
+  const upd = db.prepare('UPDATE history SET sort_key = ? WHERE id = ?');
+  rows.forEach((r) => {
+    const key = parseMonthKey(r.month);
+    if (key != null) upd.run(key, r.id);
+  });
+}
 
 // The four friends — see the dedication in the design.
 const MEMBERS = [
@@ -120,10 +140,10 @@ function seed() {
     );
 
     const insHistory = db.prepare(
-      'INSERT INTO history (month, title, author, genre, pages, year, cover_url, tally, runner_up, created_at) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, ?)',
+      'INSERT INTO history (month, title, author, genre, pages, year, cover_url, tally, runner_up, created_at, sort_key) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?)',
     );
     SEED_HISTORY.forEach((h) =>
-      insHistory.run(h.month, h.title, h.author, h.genre, h.pages, h.year, h.tally, h.runnerUp, now),
+      insHistory.run(h.month, h.title, h.author, h.genre, h.pages, h.year, h.tally, h.runnerUp, now, parseMonthKey(h.month)),
     );
 
     db.prepare("INSERT INTO meta (key, value) VALUES ('seeded', '1')").run();
