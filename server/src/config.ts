@@ -7,6 +7,8 @@ const production = process.env.NODE_ENV === 'production';
 export const config = {
   port: Number(process.env.PORT) || 8787,
   production,
+  /** Display name of the club. Override with CLUB_NAME. */
+  clubName: process.env.CLUB_NAME || 'The Smallest Book Club Who Ever Lived',
   /** SQLite file — created on first run. Override with DB_PATH. */
   dbPath: process.env.DB_PATH || path.join(serverRoot, 'data', 'bookclub.db'),
   /**

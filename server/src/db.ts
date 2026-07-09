@@ -1,3 +1,4 @@
+import { config } from './config';
 import { db } from './sqlite';
 
 export { db };
@@ -87,17 +88,17 @@ const SEED_BOOKS = [
 ];
 
 const SEED_HISTORY = [
-  { month: 'June 2026', title: 'Tomorrow, and Tomorrow, and Tomorrow', author: 'Gabrielle Zevin', genre: 'Literary', pages: 401, year: 2022, tally: '5–3', runnerUp: 'The Bee Sting' },
-  { month: 'May 2026', title: 'Babel', author: 'R.F. Kuang', genre: 'Fantasy', pages: 545, year: 2022, tally: '6–2', runnerUp: 'Yellowface' },
-  { month: 'April 2026', title: 'Sea of Tranquility', author: 'Emily St. John Mandel', genre: 'Sci-Fi', pages: 259, year: 2022, tally: '5–2', runnerUp: 'Cloud Cuckoo Land' },
-  { month: 'March 2026', title: 'The Wager', author: 'David Grann', genre: 'Nonfiction', pages: 329, year: 2023, tally: '4–3', runnerUp: 'Chip War' },
+  { month: 'juin 2026', title: 'Tomorrow, and Tomorrow, and Tomorrow', author: 'Gabrielle Zevin', genre: 'Literary', pages: 401, year: 2022, tally: '5–3', runnerUp: 'The Bee Sting' },
+  { month: 'mai 2026', title: 'Babel', author: 'R.F. Kuang', genre: 'Fantasy', pages: 545, year: 2022, tally: '6–2', runnerUp: 'Yellowface' },
+  { month: 'avril 2026', title: 'Sea of Tranquility', author: 'Emily St. John Mandel', genre: 'Sci-Fi', pages: 259, year: 2022, tally: '5–2', runnerUp: 'Cloud Cuckoo Land' },
+  { month: 'mars 2026', title: 'The Wager', author: 'David Grann', genre: 'Nonfiction', pages: 329, year: 2023, tally: '4–3', runnerUp: 'Chip War' },
 ];
 
 function seed() {
   // The club row must always exist.
   if (!db.prepare('SELECT 1 FROM club WHERE id = 1').get()) {
     db.prepare('INSERT INTO club (id, name, month_idx, phase, live_tally) VALUES (1, ?, 0, ?, 1)').run(
-      'Lamplight',
+      config.clubName,
       'suggesting',
     );
   }

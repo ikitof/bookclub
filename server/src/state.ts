@@ -1,3 +1,4 @@
+import { config } from './config';
 import { db } from './db';
 import { monthLabel } from './months';
 import type { Book, HistoryEntry, Member, Phase, Snapshot } from './types';
@@ -49,7 +50,8 @@ export function buildSnapshot(): Snapshot {
 
   return {
     club: {
-      name: club.name,
+      // The display name is configuration, not per-database state.
+      name: config.clubName,
       monthLabel: monthLabel(club.monthIdx),
       monthIdx: club.monthIdx,
       phase: club.phase,

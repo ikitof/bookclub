@@ -45,7 +45,7 @@ function memberFromReq(req: Request): MemberRow | null {
 function requireMember(req: Request, res: Response, next: NextFunction): void {
   const member = memberFromReq(req);
   if (!member) {
-    res.status(401).json({ error: 'Open the cover first — sign in as a member.' });
+    res.status(401).json({ error: 'Ouvrez d’abord la couverture — connectez-vous en tant que membre.' });
     return;
   }
   res.locals.member = member;
@@ -68,7 +68,7 @@ api.post('/session', (req, res) => {
     .prepare('SELECT id, name, initials, color, gray FROM members WHERE id = ?')
     .get(req.body?.memberId) as MemberRow | undefined;
   if (!member) {
-    res.status(400).json({ error: 'Unknown member.' });
+    res.status(400).json({ error: 'Membre inconnu.' });
     return;
   }
   const token = randomUUID();
@@ -127,7 +127,7 @@ api.post('/suggestions', requireMember, (req, res) => {
     .slice(0, 2);
 
   if (books.length !== 2) {
-    res.status(400).json({ error: 'Give a title and author for both volumes.' });
+    res.status(400).json({ error: 'Donnez un titre et un auteur pour les deux volumes.' });
     return;
   }
 
@@ -150,12 +150,12 @@ api.post('/suggestions', requireMember, (req, res) => {
 api.post('/draw', requireMember, (_req, res) => {
   const phase = (db.prepare('SELECT phase FROM club WHERE id = 1').get() as { phase: string }).phase;
   if (phase !== 'suggesting') {
-    res.status(409).json({ error: 'The lots can only be drawn while offerings are open.' });
+    res.status(409).json({ error: 'Le tirage n’est possible que pendant les propositions.' });
     return;
   }
   const ids = (db.prepare('SELECT id FROM books').all() as { id: string }[]).map((r) => r.id);
   if (ids.length < 2) {
-    res.status(400).json({ error: 'At least two volumes are needed to draw.' });
+    res.status(400).json({ error: 'Il faut au moins deux volumes pour tirer au sort.' });
     return;
   }
   for (let i = ids.length - 1; i > 0; i--) {
@@ -183,12 +183,12 @@ api.post('/vote', requireMember, (req, res) => {
     drawn_b: string | null;
   };
   if (club.phase !== 'voting') {
-    res.status(409).json({ error: 'The ballot is not open.' });
+    res.status(409).json({ error: 'Le scrutin n’est pas ouvert.' });
     return;
   }
   const bookId = String(req.body?.bookId ?? '');
   if (bookId !== club.drawn_a && bookId !== club.drawn_b) {
-    res.status(400).json({ error: 'That volume is not on the ballot.' });
+    res.status(400).json({ error: 'Ce volume n’est pas au scrutin.' });
     return;
   }
   db.prepare(
@@ -202,7 +202,7 @@ api.post('/vote', requireMember, (req, res) => {
 api.post('/seal', requireMember, (_req, res) => {
   const phase = (db.prepare('SELECT phase FROM club WHERE id = 1').get() as { phase: string }).phase;
   if (phase !== 'voting') {
-    res.status(409).json({ error: 'The ballot is not open.' });
+    res.status(409).json({ error: 'Le scrutin n’est pas ouvert.' });
     return;
   }
   db.prepare("UPDATE club SET phase = 'result' WHERE id = 1").run();
@@ -216,7 +216,7 @@ api.post('/next-month', requireMember, (_req, res) => {
     .prepare('SELECT month_idx AS monthIdx, phase, drawn_a AS a, drawn_b AS b FROM club WHERE id = 1')
     .get() as { monthIdx: number; phase: string; a: string | null; b: string | null };
   if (club.phase !== 'result') {
-    res.status(409).json({ error: 'Seal the ballot before opening a new month.' });
+    res.status(409).json({ error: 'Scellez le scrutin avant d’ouvrir un nouveau mois.' });
     return;
   }
 
@@ -276,5 +276,5 @@ if (fs.existsSync(config.clientDist)) {
 }
 
 app.listen(config.port, () => {
-  console.log(`Lamplight server listening on http://localhost:${config.port}`);
+  console.log(`Book club server listening on http://localhost:${config.port}`);
 });
