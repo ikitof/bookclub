@@ -2,7 +2,7 @@
   "name": "bookclub",
   "version": "0.1.0",
   "private": true,
-  "description": "Lamplight — a reading society. A small book club that runs a monthly offer → draw → ballot → record cycle.",
+  "description": "The Smallest Book Club Who Ever Lived — un club de lecture : proposition, tirage au sort, scrutin et registre, chaque mois.",
   "license": "Apache-2.0",
   "workspaces": [
     "server",

@@ -1,6 +1,8 @@
-# Lamplight — a reading society
+# The Smallest Book Club Who Ever Lived
 
 A small book club that runs a monthly cycle: **offer → draw → ballot → record**.
+The interface is in French.
+
 Each member inscribes two volumes on the table, two are drawn by lot, the society votes,
 and the chosen book is written into the record. The whole thing is rendered as an open
 book, with a monochrome and a warm "antiquarian" theme.
@@ -10,7 +12,7 @@ Built for four friends — Sarah, Emma, Elza and Arthur.
 ## Stack
 
 - **Client** — Vite + React + TypeScript (`client/`)
-- **Server** — Express + SQLite (`better-sqlite3`), with Server-Sent Events for live updates (`server/`)
+- **Server** — Express + SQLite (`node-sqlite3-wasm`), with Server-Sent Events for live updates (`server/`)
 - **Book data** — covers & metadata from the [Open Library](https://openlibrary.org) API
 - Monorepo wired together with npm workspaces.
 
@@ -45,7 +47,7 @@ docker compose up --build -d
 
 Then browse to `http://localhost:${HOST_PORT}` (8787 by default). The image is a
 multi-stage build that compiles the client and server and runs as a non-root user;
-the SQLite database lives on a named volume (`lamplight-data`) so it survives
+the SQLite database lives on a named volume (`bookclub-data`) so it survives
 rebuilds. Stop with `docker compose down` (add `-v` to also wipe the database).
 
 ## Configuration
@@ -55,6 +57,7 @@ and `docker compose` reads everything from `.env` (see `.env.example`):
 
 | Variable        | Default             | Purpose                                              |
 | --------------- | ------------------- | ---------------------------------------------------- |
+| `CLUB_NAME`     | The Smallest…       | Club name shown on the cover and running head        |
 | `PORT`          | `8787`              | Port the server listens on                           |
 | `HOST_PORT`     | `8787`              | Host port published by Compose                       |
 | `DB_PATH`       | `/data/bookclub.db` | SQLite file location (on the volume, in Docker)      |
@@ -79,7 +82,7 @@ server/   Express API + SQLite + SSE
 design/   Original design source (Claude design canvas) and reference screenshots
 ```
 
-The interface is a faithful implementation of the *Lamplight Book Club* design in `design/`;
+The interface is a faithful implementation of the original design in `design/`;
 see `design/screenshots/` for the reference renders.
 
 ---

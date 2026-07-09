@@ -2,7 +2,7 @@
   "name": "@bookclub/server",
   "version": "0.1.0",
   "private": true,
-  "description": "Express + SQLite API for the Lamplight reading society.",
+  "description": "API Express + SQLite du club de lecture.",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

@@ -2,14 +2,14 @@
 # Values below fall back to sensible defaults if .env is absent.
 
 services:
-  lamplight:
+  bookclub:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         NODE_VERSION: ${NODE_VERSION:-20-alpine}
-    image: lamplight:${IMAGE_TAG:-latest}
-    container_name: ${CONTAINER_NAME:-lamplight}
+    image: bookclub:${IMAGE_TAG:-latest}
+    container_name: ${CONTAINER_NAME:-bookclub}
     restart: unless-stopped
     environment:
       NODE_ENV: ${NODE_ENV:-production}
@@ -22,8 +22,8 @@ services:
     volumes:
       # SQLite database persists here across container rebuilds.
       # Default: managed Docker volume. Set DATA_PATH to an absolute host path
-      # to bind-mount instead (e.g. DATA_PATH=/srv/lamplight/data).
-      - ${DATA_PATH:-lamplight-data}:/data
+      # to bind-mount instead (e.g. DATA_PATH=/srv/bookclub/data).
+      - ${DATA_PATH:-bookclub-data}:/data
     healthcheck:
       test:
         - CMD
@@ -36,4 +36,4 @@ services:
       start_period: 10s
 
 volumes:
-  lamplight-data:
+  bookclub-data:
