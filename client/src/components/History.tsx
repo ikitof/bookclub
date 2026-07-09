@@ -62,12 +62,14 @@ export function History({ club }: { club: Club }) {
                   {view.meta ? ` · ${view.meta}` : ''}
                 </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 20, color: 'var(--ink)' }}>l’emporte {h.tally}</div>
-                {h.runnerUp && (
-                  <div style={{ font: "italic 400 14px 'IM Fell English'", color: 'var(--ink-3)' }}>devant {h.runnerUp}</div>
-                )}
-              </div>
+              {h.tally && (
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 20, color: 'var(--ink)' }}>l’emporte {h.tally}</div>
+                  {h.runnerUp && (
+                    <div style={{ font: "italic 400 14px 'IM Fell English'", color: 'var(--ink-3)' }}>devant {h.runnerUp}</div>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
