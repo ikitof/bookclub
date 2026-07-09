@@ -28,7 +28,7 @@ const cookieOpts: CookieOptions = {
   sameSite: 'lax',
   path: '/',
   maxAge: 1000 * 60 * 60 * 24 * 365,
-  secure: config.production,
+  secure: config.cookieSecure,
 };
 
 function memberFromReq(req: Request): MemberRow | null {
