@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; color: #1c1c1c; font-family: 'IM Fell English', Georgia, serif; -webkit-font-smoothing: antialiased; background: #0d0d0f; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { opacity: 0.8; }
+  input, select, button, textarea { font-family: 'IM Fell English', serif; }
+  ::placeholder { color: var(--ink-4); font-style: italic; font-family: 'IM Fell English', serif; }
+  select option { background: var(--plate); color: var(--ink); font-family: 'IM Fell English', serif; }
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--accent-line); border-radius: 999px; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes flick { 0%,100% { opacity: 1; } 50% { opacity: 0.86; } }
+  @keyframes spinnerRot { to { transform: rotate(360deg); } }
+  @keyframes leafTurn { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
+  @keyframes leafLift {
+    0% { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+    45% { filter: drop-shadow(-26px 18px 30px rgba(0,0,0,0.4)); }
+    100% { filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+  }
+  @keyframes leafShade { 0% { opacity: 0.14; } 32% { opacity: 0.52; } 100% { opacity: 0; } }
+  @keyframes leafShadeBack { 0% { opacity: 0; } 70% { opacity: 0; } 100% { opacity: 0.16; } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,44px);color:var(--ink);background:{{ deskBg }};{{ themeVars }}">
+
+  <!-- ===================== CLOSED BOOK / LOGIN (colored cover) ===================== -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+    <div style="position:relative;width:min(720px,96vw);animation:fadeUp 0.6s ease both;">
+      <div style="position:absolute;top:-2px;right:16%;width:26px;height:132px;background:var(--cover-ribbon);clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);box-shadow:2px 2px 6px rgba(0,0,0,0.4);z-index:3;"></div>
+      <div style="position:relative;background:var(--cover-binding);border-radius:5px 9px 9px 5px;padding:clamp(30px,5vw,56px);box-shadow:inset 0 0 0 2px var(--cover-line), inset 0 0 90px rgba(0,0,0,0.4), 20px 26px 60px rgba(0,0,0,0.6);overflow:hidden;">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:16px;background:linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0));"></div>
+        <div style="border:1.5px solid var(--cover-line);border-radius:3px;padding:clamp(30px,4.5vw,48px) clamp(22px,4vw,42px);text-align:center;position:relative;">
+          <div style="display:flex;justify-content:center;margin-bottom:14px;">
+            <svg viewBox="0 0 96 96" width="48" height="48" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="orbC" cx="50%" cy="42%" r="55%"><stop offset="0%" stop-color="#FBE9BE"></stop><stop offset="55%" stop-color="#D9AE52"></stop><stop offset="100%" stop-color="#A97C2C"></stop></radialGradient></defs><circle cx="48" cy="48" r="26" fill="none" stroke="#C9A24B" stroke-width="1.5"></circle><circle cx="48" cy="48" r="17" fill="url(#orbC)"></circle><ellipse cx="42" cy="41" rx="6" ry="4" fill="#FFF6DD" opacity="0.7"></ellipse></svg>
+          </div>
+          <h1 style="margin:0 auto;max-width:9em;font-family:'Tangerine';font-weight:700;font-size:clamp(46px,9vw,84px);line-height:0.98;color:var(--cover-foil);text-shadow:0 1px 0 rgba(0,0,0,0.4);">{{ clubName }}</h1>
+          <div style="margin-top:10px;font-family:'Tangerine';font-weight:500;font-size:clamp(19px,3.4vw,26px);color:var(--cover-foil-2);">a reading society</div>
+          <div style="margin:18px auto 8px;color:var(--cover-foil-2);font-size:22px;">❦</div>
+          <div style="font:500 13px/1 'IM Fell English';letter-spacing:0.24em;text-transform:uppercase;color:var(--cover-foil-2);margin-bottom:18px;">This volume belongs to</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px;max-width:520px;margin:0 auto;">
+            <sc-for list="{{ memberCards }}" as="m" hint-placeholder-count="8">
+              <button onClick="{{ m.signIn }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;background:rgba(255,255,255,0.06);border:1px solid var(--cover-line);border-radius:3px;cursor:pointer;transition:background 0.2s, transform 0.2s;" style-hover="background:rgba(255,255,255,0.14);transform:translateY(-3px);">
+                <span style="width:42px;height:42px;border-radius:999px;background:{{ m.seal }};border:2px solid rgba(0,0,0,0.28);box-shadow:inset 0 2px 6px rgba(0,0,0,0.35);color:#f4efe6;font:600 20px/40px 'Tangerine';text-align:center;">{{ m.initials }}</span>
+                <span style="font-family:'Tangerine';font-weight:600;font-size:20px;color:var(--cover-foil);">{{ m.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin-top:20px;font-family:'Tangerine';font-weight:500;font-size:18px;color:var(--cover-foil-2);">Open the cover to begin · Est. 2026</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== THE OPEN BOOK (black & white) ===================== -->
+  <sc-if value="{{ showChrome }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative;width:min(1060px,96vw);height:min(90vh,900px);perspective:2400px;perspective-origin:12% 50%;">
+      <div style="position:absolute;top:-3px;right:16px;width:20px;height:132px;background:var(--ribbon);clip-path:polygon(0 0,100% 0,100% 100%,50% 84%,0 100%);box-shadow:2px 2px 6px rgba(0,0,0,0.45);z-index:6;pointer-events:none;"></div>
+
+      <div style="position:relative;height:100%;background:var(--binding);border-radius:4px 8px 8px 4px;padding:13px 13px 15px 17px;box-shadow:20px 26px 62px rgba(0,0,0,0.62), inset 0 0 0 2px var(--binding-line);">
+        <div style="position:relative;height:100%;">
+          <div style="position:absolute;inset:0;border-radius:2px 4px 4px 2px;box-shadow:4px 5px 0 var(--edge), 8px 10px 0 var(--edge), 12px 15px 0 var(--edge);"></div>
+
+          <div style="position:absolute;inset:0;border-radius:2px 4px 4px 2px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:34px;background:var(--spine);pointer-events:none;"></div>
+
+            <!-- running head -->
+            <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px clamp(20px,4vw,46px) 0;">
+              <span style="font:500 12.5px/1 'IM Fell English';letter-spacing:0.26em;text-transform:uppercase;color:var(--ink-3);">A Reading Society</span>
+              <div style="display:flex;align-items:center;gap:9px;">
+                <span style="width:32px;height:32px;border-radius:999px;background:{{ userColor }};border:2px solid rgba(0,0,0,0.22);box-shadow:inset 0 2px 5px rgba(0,0,0,0.3);color:#f2f2f0;font:600 16px/30px 'Tangerine';text-align:center;">{{ userInitials }}</span>
+                <div style="line-height:1.1;">
+                  <div style="font-family:'Tangerine';font-weight:600;font-size:19px;color:var(--ink);">{{ userName }}</div>
+                  <button onClick="{{ signOut }}" style="background:none;border:none;padding:0;font:italic 400 13px 'IM Fell English';color:var(--ink-4);cursor:pointer;">close the book</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- chapter title -->
+            <div style="flex:none;text-align:center;padding:12px clamp(20px,4vw,46px) 6px;">
+              <div style="font:500 12.5px/1 'IM Fell English';letter-spacing:0.24em;text-transform:uppercase;color:var(--ink-3);">{{ chapterEyebrow }}</div>
+              <h2 style="margin:4px 0 8px;font-family:'Tangerine';font-weight:700;font-size:clamp(50px,8vw,82px);line-height:0.98;color:var(--ink);">{{ chapterTitle }}</h2>
+              <div style="display:flex;align-items:center;justify-content:center;gap:14px;color:var(--rule);">
+                <span style="height:1px;width:52px;background:linear-gradient(90deg,transparent,var(--rule));"></span>
+                <span style="font-size:17px;">❦</span>
+                <span style="height:1px;width:52px;background:linear-gradient(270deg,transparent,var(--rule));"></span>
+              </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:10px clamp(20px,4vw,46px) 20px;">
+
+              <!-- ===== POOL ===== -->
+              <sc-if value="{{ isPool }}" hint-placeholder-val="{{ false }}">
+                <div style="animation:fadeUp 0.5s ease both;">
+                  <div style="text-align:center;margin-bottom:6px;">
+                    <sc-for list="{{ steps }}" as="step" hint-placeholder-count="3"><span style="color:{{ step.fg }};margin:0 9px;font-variant:small-caps;letter-spacing:0.12em;font-size:14px;font-family:'IM Fell English';">{{ step.num }} · {{ step.label }}</span></sc-for>
+                  </div>
+                  <p style="text-align:center;max-width:620px;margin:2px auto 22px;font-family:'Tangerine';font-weight:700;font-size:27px;line-height:1.25;color:var(--ink-2);">{{ phaseSub }}</p>
+
+                  <div style="display:flex;align-items:center;gap:14px;margin:22px 0 14px;">
+                    <span style="font-family:'Tangerine';font-weight:700;font-size:28px;color:var(--ink);">Your two volumes</span>
+                    <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--rule),transparent);"></span>
+                    <span style="font:italic 400 16px 'IM Fell English';color:var(--ink-4);">{{ mySubsCount }} of 2</span>
+                  </div>
+                  <sc-if value="{{ hasMySubs }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:26px;">
+                      <sc-for list="{{ mySubsViews }}" as="book" hint-placeholder-count="2">
+                        <div style="transform:rotate({{ book.tilt }}deg);transition:transform 0.25s ease;" style-hover="transform:rotate(0deg) translateY(-4px);">
+                          <div style="background:var(--plate);padding:9px 9px 11px;border:1px solid var(--plate-line);box-shadow:0 9px 22px -12px rgba(20,15,5,0.55);">
+                            <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                              {{ book.coverImg }}
+                              <div style="position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(-2deg);width:52px;height:15px;background:var(--tape);box-shadow:0 1px 2px rgba(0,0,0,0.12);"></div>
+                              <sc-if value="{{ book.noCover }}" hint-placeholder-val="{{ true }}">
+                                <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:12px;">
+                                  <div style="font:600 10px 'IM Fell English';letter-spacing:0.2em;text-transform:uppercase;color:{{ book.tint }};">{{ book.genre }}</div>
+                                  <div style="color:var(--rule);margin:6px 0;font-size:13px;">❧</div>
+                                  <div style="font-family:'Tangerine';font-weight:700;font-size:22px;line-height:1.05;color:var(--ink);">{{ book.title }}</div>
+                                  <div style="margin-top:4px;font:italic 400 13px 'IM Fell English';color:var(--ink-2);">{{ book.author }}</div>
+                                </div>
+                              </sc-if>
+                            </div>
+                            <div style="padding:9px 3px 2px;">
+                              <div style="font-family:'Tangerine';font-weight:700;font-size:20px;line-height:1.1;color:var(--ink);">{{ book.title }}</div>
+                              <div style="font:italic 400 14px 'IM Fell English';color:var(--ink-2);">{{ book.meta }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ noMySubs }}" hint-placeholder-val="{{ true }}">
+                    <div style="border:1.5px dashed var(--accent-line);border-radius:3px;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;background:var(--card);">
+                      <div>
+                        <div style="font-family:'Tangerine';font-weight:700;font-size:26px;color:var(--ink);">Your leaf in the ledger is blank</div>
+                        <div style="font:italic 400 17px 'IM Fell English';color:var(--ink-2);margin-top:3px;">Inscribe two volumes before the drawing is held.</div>
+                      </div>
+                      <button onClick="{{ goSubmit }}" style="padding:9px 24px;background:var(--accent);color:var(--on-accent);border:none;border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:21px;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.22);white-space:nowrap;">Inscribe your volumes</button>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ isSuggesting }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin:26px 0;border:1px solid var(--accent-line);border-radius:3px;padding:20px 22px;background:var(--accent-wash);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
+                      <div>
+                        <div style="font:600 11px 'IM Fell English';letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);">the keeper's office</div>
+                        <div style="font-family:'Tangerine';font-weight:700;font-size:25px;color:var(--ink);margin-top:4px;">Hold this month's drawing</div>
+                        <div style="font:italic 400 16px 'IM Fell English';color:var(--ink-2);">Draw two volumes from the table, by lot, for the society to weigh.</div>
+                      </div>
+                      <button onClick="{{ runDraw }}" style="padding:10px 26px;background:var(--accent);color:var(--on-accent);border:none;border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:22px;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.22);white-space:nowrap;">Draw the lots</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ isVoting }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin:26px 0;border:1px solid var(--accent-line);border-radius:3px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--card);">
+                      <div style="font-family:'Tangerine';font-weight:600;font-size:22px;color:var(--ink);">The lots are drawn — the ballot is open.</div>
+                      <button onClick="{{ goVote }}" style="padding:8px 22px;background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:20px;cursor:pointer;white-space:nowrap;">To the ballot</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin:26px 0;border:1px solid var(--accent-line);border-radius:3px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--card);">
+                      <div style="font-family:'Tangerine';font-weight:600;font-size:22px;color:var(--ink);">The vote is settled for {{ monthLabel }}.</div>
+                      <button onClick="{{ goVote }}" style="padding:8px 22px;background:var(--accent);color:var(--on-accent);border:none;border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:20px;cursor:pointer;white-space:nowrap;">See the chosen volume</button>
+                    </div>
+                  </sc-if>
+
+                  <div style="display:flex;align-items:center;gap:14px;margin:30px 0 16px;">
+                    <span style="font-family:'Tangerine';font-weight:700;font-size:28px;color:var(--ink);">On the table this month</span>
+                    <span style="flex:1;height:1px;background:linear-gradient(90deg,var(--rule),transparent);"></span>
+                    <span style="font:italic 400 16px 'IM Fell English';color:var(--ink-4);">{{ poolCount }} volumes</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:26px;">
+                    <sc-for list="{{ poolViews }}" as="book" hint-placeholder-count="10">
+                      <div style="transform:rotate({{ book.tilt }}deg);transition:transform 0.25s ease;" style-hover="transform:rotate(0deg) translateY(-4px);">
+                        <div style="background:var(--plate);padding:9px 9px 11px;border:1px solid var(--plate-line);box-shadow:0 9px 22px -12px rgba(20,15,5,0.55);">
+                          <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                            {{ book.coverImg }}
+                            <div style="position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(-2deg);width:52px;height:15px;background:var(--tape);box-shadow:0 1px 2px rgba(0,0,0,0.12);"></div>
+                            <sc-if value="{{ book.noCover }}" hint-placeholder-val="{{ true }}">
+                              <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:12px;">
+                                <div style="font:600 10px 'IM Fell English';letter-spacing:0.2em;text-transform:uppercase;color:{{ book.tint }};">{{ book.genre }}</div>
+                                <div style="color:var(--rule);margin:6px 0;font-size:13px;">❧</div>
+                                <div style="font-family:'Tangerine';font-weight:700;font-size:22px;line-height:1.05;color:var(--ink);">{{ book.title }}</div>
+                                <div style="margin-top:4px;font:italic 400 13px 'IM Fell English';color:var(--ink-2);">{{ book.author }}</div>
+                              </div>
+                            </sc-if>
+                          </div>
+                          <div style="padding:9px 3px 2px;">
+                            <div style="font-family:'Tangerine';font-weight:700;font-size:20px;line-height:1.1;color:var(--ink);">{{ book.title }}</div>
+                            <div style="font:italic 400 14px 'IM Fell English';color:var(--ink-2);">{{ book.meta }}</div>
+                            <div style="display:flex;align-items:center;gap:7px;margin-top:6px;">
+                              <span style="width:20px;height:20px;border-radius:999px;background:{{ book.by.color }};border:1.5px solid rgba(0,0,0,0.2);color:#f2f2f0;font:600 11px/17px 'Tangerine';text-align:center;flex:none;">{{ book.by.initials }}</span>
+                              <span style="font:italic 400 13.5px 'IM Fell English';color:var(--ink-3);">offered by {{ book.by.name }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- ===== SUBMIT ===== -->
+              <sc-if value="{{ isSubmit }}" hint-placeholder-val="{{ false }}">
+                <div style="animation:fadeUp 0.5s ease both;max-width:900px;margin:0 auto;">
+                  <p style="text-align:center;max-width:580px;margin:0 auto 24px;font-family:'Tangerine';font-weight:700;font-size:27px;line-height:1.25;color:var(--ink-2);">Name a volume and press <span style="color:var(--accent);font-weight:700;">Look it up</span> — the register fetches its plate, author and length. Or write it in by hand.</p>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:26px;">
+
+                    <div style="border:1px solid var(--plate-line);background:var(--card);border-radius:3px;padding:18px;display:flex;gap:16px;flex-wrap:wrap;">
+                      <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:14px;">
+                        <div style="font:600 11px 'IM Fell English';letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);">the first volume</div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                          <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Title</label>
+                          <div style="display:flex;gap:8px;align-items:flex-end;">
+                            <input value="{{ f0.title }}" onChange="{{ h.s0title }}" onKeyDown="{{ h.s0key }}" placeholder="name a book…" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 19px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                            <button onClick="{{ searchBtn0 }}" style="flex:none;padding:5px 14px;border:1px solid var(--accent);border-radius:2px;background:transparent;color:var(--accent);font-family:'Tangerine';font-weight:700;font-size:18px;cursor:pointer;white-space:nowrap;">Look it up</button>
+                          </div>
+                        </div>
+                        <sc-if value="{{ sch0.open }}" hint-placeholder-val="{{ false }}">
+                          <div style="border:1px solid var(--plate-line);background:var(--plate);border-radius:2px;padding:5px;max-height:230px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;">
+                            <sc-if value="{{ sch0.loading }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:9px;padding:9px 7px;font:italic 400 15px 'IM Fell English';color:var(--ink-2);"><span style="width:13px;height:13px;border:2px solid var(--accent-line);border-top-color:var(--accent);border-radius:999px;display:inline-block;animation:spinnerRot 0.7s linear infinite;"></span>Consulting the register…</div></sc-if>
+                            <sc-if value="{{ sch0.hasError }}" hint-placeholder-val="{{ false }}"><div style="padding:9px 7px;font:italic 400 15px 'IM Fell English';color:var(--ink-4);">{{ sch0.error }}</div></sc-if>
+                            <sc-for list="{{ sch0.results }}" as="r" hint-placeholder-count="0">
+                              <button onClick="{{ r.choose }}" style="display:flex;gap:10px;align-items:center;text-align:left;width:100%;padding:6px;border:none;background:transparent;border-radius:2px;cursor:pointer;transition:background 0.12s;" style-hover="background:var(--accent-wash);">
+                                <span style="width:30px;height:45px;flex:none;overflow:hidden;background:var(--fallback);position:relative;display:block;border:1px solid var(--plate-line);">{{ r.coverImg }}</span>
+                                <span style="min-width:0;">
+                                  <span style="display:block;font-family:'Tangerine';font-weight:600;font-size:18px;line-height:1.1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.title }}</span>
+                                  <span style="display:block;font:italic 400 13px 'IM Fell English';color:var(--ink-3);">{{ r.meta }}</span>
+                                </span>
+                              </button>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                          <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Author</label>
+                          <input value="{{ f0.author }}" onChange="{{ h.s0author }}" placeholder="by whom…" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:italic 500 18px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                        </div>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                          <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;">
+                            <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Genre</label>
+                            <select value="{{ f0.genre }}" onChange="{{ h.s0genre }}" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 17px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);"><sc-for list="{{ genreList }}" as="g" hint-placeholder-count="5"><option value="{{ g }}">{{ g }}</option></sc-for></select>
+                          </div>
+                          <div style="display:flex;flex-direction:column;gap:4px;width:74px;">
+                            <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Pages</label>
+                            <input type="number" value="{{ f0.pages }}" onChange="{{ h.s0pages }}" placeholder="—" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 17px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                          </div>
+                          <div style="display:flex;flex-direction:column;gap:4px;width:80px;">
+                            <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Year</label>
+                            <input type="number" value="{{ f0.year }}" onChange="{{ h.s0year }}" placeholder="—" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 17px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                          </div>
+                        </div>
+                      </div>
+                      <div style="width:104px;flex:none;background:var(--plate);padding:7px 7px 9px;border:1px solid var(--plate-line);box-shadow:0 6px 16px -10px rgba(20,15,5,0.55);align-self:flex-start;">
+                        <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                          {{ previewA.coverImg }}
+                          <sc-if value="{{ previewA.noCover }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8px;"><div style="font:600 8px 'IM Fell English';letter-spacing:0.16em;text-transform:uppercase;color:{{ previewA.tint }};">{{ previewA.genre }}</div><div style="color:var(--rule);margin:4px 0;font-size:11px;">❧</div><div style="font-family:'Tangerine';font-weight:700;font-size:16px;line-height:1.05;color:var(--ink);">{{ previewA.title }}</div><div style="margin-top:2px;font:italic 400 11px 'IM Fell English';color:var(--ink-2);">{{ previewA.author }}</div></div></sc-if>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="border:1px solid var(--plate-line);background:var(--card);border-radius:3px;padding:18px;display:flex;gap:16px;flex-wrap:wrap;">
+                      <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:14px;">
+                        <div style="font:600 11px 'IM Fell English';letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-3);">the second volume</div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                          <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Title</label>
+                          <div style="display:flex;gap:8px;align-items:flex-end;">
+                            <input value="{{ f1.title }}" onChange="{{ h.s1title }}" onKeyDown="{{ h.s1key }}" placeholder="name a book…" style="flex:1;min-width:0;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 19px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                            <button onClick="{{ searchBtn1 }}" style="flex:none;padding:5px 14px;border:1px solid var(--accent);border-radius:2px;background:transparent;color:var(--accent);font-family:'Tangerine';font-weight:700;font-size:18px;cursor:pointer;white-space:nowrap;">Look it up</button>
+                          </div>
+                        </div>
+                        <sc-if value="{{ sch1.open }}" hint-placeholder-val="{{ false }}">
+                          <div style="border:1px solid var(--plate-line);background:var(--plate);border-radius:2px;padding:5px;max-height:230px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;">
+                            <sc-if value="{{ sch1.loading }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:9px;padding:9px 7px;font:italic 400 15px 'IM Fell English';color:var(--ink-2);"><span style="width:13px;height:13px;border:2px solid var(--accent-line);border-top-color:var(--accent);border-radius:999px;display:inline-block;animation:spinnerRot 0.7s linear infinite;"></span>Consulting the register…</div></sc-if>
+                            <sc-if value="{{ sch1.hasError }}" hint-placeholder-val="{{ false }}"><div style="padding:9px 7px;font:italic 400 15px 'IM Fell English';color:var(--ink-4);">{{ sch1.error }}</div></sc-if>
+                            <sc-for list="{{ sch1.results }}" as="r" hint-placeholder-count="0">
+                              <button onClick="{{ r.choose }}" style="display:flex;gap:10px;align-items:center;text-align:left;width:100%;padding:6px;border:none;background:transparent;border-radius:2px;cursor:pointer;transition:background 0.12s;" style-hover="background:var(--accent-wash);">
+                                <span style="width:30px;height:45px;flex:none;overflow:hidden;background:var(--fallback);position:relative;display:block;border:1px solid var(--plate-line);">{{ r.coverImg }}</span>
+                                <span style="min-width:0;">
+                                  <span style="display:block;font-family:'Tangerine';font-weight:600;font-size:18px;line-height:1.1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.title }}</span>
+                                  <span style="display:block;font:italic 400 13px 'IM Fell English';color:var(--ink-3);">{{ r.meta }}</span>
+                                </span>
+                              </button>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                          <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Author</label>
+                          <input value="{{ f1.author }}" onChange="{{ h.s1author }}" placeholder="by whom…" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:italic 500 18px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                        </div>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                          <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;">
+                            <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Genre</label>
+                            <select value="{{ f1.genre }}" onChange="{{ h.s1genre }}" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 17px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);"><sc-for list="{{ genreList }}" as="g" hint-placeholder-count="5"><option value="{{ g }}">{{ g }}</option></sc-for></select>
+                          </div>
+                          <div style="display:flex;flex-direction:column;gap:4px;width:74px;">
+                            <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Pages</label>
+                            <input type="number" value="{{ f1.pages }}" onChange="{{ h.s1pages }}" placeholder="—" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 17px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                          </div>
+                          <div style="display:flex;flex-direction:column;gap:4px;width:80px;">
+                            <label style="font:600 11px 'IM Fell English';letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-4);">Year</label>
+                            <input type="number" value="{{ f1.year }}" onChange="{{ h.s1year }}" placeholder="—" style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--accent-line);padding:5px 2px;color:var(--ink);font:500 17px 'IM Fell English';outline:none;" style-focus="border-bottom-color:var(--accent);">
+                          </div>
+                        </div>
+                      </div>
+                      <div style="width:104px;flex:none;background:var(--plate);padding:7px 7px 9px;border:1px solid var(--plate-line);box-shadow:0 6px 16px -10px rgba(20,15,5,0.55);align-self:flex-start;">
+                        <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                          {{ previewB.coverImg }}
+                          <sc-if value="{{ previewB.noCover }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8px;"><div style="font:600 8px 'IM Fell English';letter-spacing:0.16em;text-transform:uppercase;color:{{ previewB.tint }};">{{ previewB.genre }}</div><div style="color:var(--rule);margin:4px 0;font-size:11px;">❧</div><div style="font-family:'Tangerine';font-weight:700;font-size:16px;line-height:1.05;color:var(--ink);">{{ previewB.title }}</div><div style="margin-top:2px;font:italic 400 11px 'IM Fell English';color:var(--ink-2);">{{ previewB.author }}</div></div></sc-if>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="margin-top:22px;text-align:center;">
+                    <button onClick="{{ submitPicks }}" style="padding:10px 34px;background:var(--accent);color:var(--on-accent);border:none;border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:24px;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.22);">Enter both in the ledger</button>
+                    <div style="margin-top:9px;font:italic 400 14px 'IM Fell English';color:var(--ink-4);">Entering again replaces your current two.</div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- ===== VOTE ===== -->
+              <sc-if value="{{ isVote }}" hint-placeholder-val="{{ false }}">
+                <div style="animation:fadeUp 0.5s ease both;">
+                  <sc-if value="{{ noDrawn }}" hint-placeholder-val="{{ true }}">
+                    <div style="text-align:center;padding:40px 20px;max-width:520px;margin:0 auto;">
+                      <div style="color:var(--rule);font-size:26px;">❦</div>
+                      <div style="font-family:'Tangerine';font-weight:700;font-size:30px;color:var(--ink);margin:8px 0;">The lots are not yet drawn</div>
+                      <div style="font-family:'Tangerine';font-weight:500;font-size:20px;line-height:1.35;color:var(--ink-2);margin-bottom:22px;">Two volumes are drawn by lot once the month's offerings are in. The keeper holds the drawing from the table.</div>
+                      <button onClick="{{ goPool }}" style="padding:9px 24px;background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:20px;cursor:pointer;">Back to the table</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ hasDrawn }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:22px;align-items:stretch;justify-content:center;flex-wrap:wrap;">
+
+                      <div style="flex:1;min-width:260px;max-width:420px;border:2px solid {{ voteA.ring }};border-radius:3px;padding:20px;background:var(--card);display:flex;flex-direction:column;gap:14px;transition:border-color 0.3s;">
+                        <sc-if value="{{ voteA.win }}" hint-placeholder-val="{{ false }}"><div style="align-self:center;font:600 12px 'IM Fell English';letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-3);">— the society chooses —</div></sc-if>
+                        <div style="display:flex;gap:16px;">
+                          <div style="width:110px;flex:none;background:var(--plate);padding:7px 7px 9px;border:1px solid var(--plate-line);box-shadow:0 8px 18px -11px rgba(20,15,5,0.55);">
+                            <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                              {{ voteA.coverImg }}
+                              <sc-if value="{{ voteA.noCover }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:9px;"><div style="font:600 9px 'IM Fell English';letter-spacing:0.16em;text-transform:uppercase;color:{{ voteA.tint }};">{{ voteA.genre }}</div><div style="color:var(--rule);margin:4px 0;">❧</div><div style="font-family:'Tangerine';font-weight:700;font-size:17px;line-height:1.05;color:var(--ink);">{{ voteA.title }}</div></div></sc-if>
+                            </div>
+                          </div>
+                          <div style="flex:1;">
+                            <div style="font:600 10.5px 'IM Fell English';letter-spacing:0.16em;text-transform:uppercase;color:{{ voteA.tint }};">{{ voteA.genre }}</div>
+                            <div style="margin-top:5px;font-family:'Tangerine';font-weight:700;font-size:29px;line-height:1.0;color:var(--ink);">{{ voteA.title }}</div>
+                            <div style="margin-top:4px;font:italic 400 16px 'IM Fell English';color:var(--ink-2);">{{ voteA.author }}</div>
+                            <div style="margin-top:3px;font:400 14px 'IM Fell English';color:var(--ink-3);">{{ voteA.meta }}</div>
+                          </div>
+                        </div>
+                        <sc-if value="{{ showTally }}" hint-placeholder-val="{{ true }}">
+                          <div>
+                            <div style="display:flex;align-items:flex-end;gap:4px;height:28px;margin-bottom:6px;">
+                              <sc-for list="{{ voteA.strokes }}" as="s" hint-placeholder-count="4"><span style="width:2px;height:24px;background:var(--accent);margin-left:{{ s.ml }};display:block;"></span></sc-for>
+                              <sc-if value="{{ voteA.noVotes }}" hint-placeholder-val="{{ false }}"><span style="font:italic 400 15px 'IM Fell English';color:var(--ink-4);">no marks yet</span></sc-if>
+                            </div>
+                            <div style="font-family:'Tangerine';font-size:22px;color:var(--ink);"><span style="font-weight:700;">{{ voteA.count }}</span> <span style="color:var(--ink-3);">votes · {{ voteA.pctStr }}</span></div>
+                            <div style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;">
+                              <sc-for list="{{ voteA.voters }}" as="v" hint-placeholder-count="3"><span title="{{ v.name }}" style="width:24px;height:24px;border-radius:999px;background:{{ v.color }};border:1.5px solid rgba(0,0,0,0.2);color:#f2f2f0;font:600 12px/21px 'Tangerine';text-align:center;">{{ v.initials }}</span></sc-for>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ hideTally }}" hint-placeholder-val="{{ false }}"><div style="font:italic 400 15px 'IM Fell English';color:var(--ink-4);">The count is sealed until you cast your vote.</div></sc-if>
+                        <button onClick="{{ voteA.vote }}" style="margin-top:auto;padding:9px 18px;border:1px solid {{ voteA.btnBorder }};border-radius:2px;background:{{ voteA.btnBg }};color:{{ voteA.btnFg }};font-family:'Tangerine';font-weight:700;font-size:20px;cursor:pointer;">{{ voteA.btnLabel }}</button>
+                      </div>
+
+                      <div style="display:flex;align-items:center;justify-content:center;font-family:'Tangerine';font-weight:500;font-size:32px;color:var(--ink-4);">or</div>
+
+                      <div style="flex:1;min-width:260px;max-width:420px;border:2px solid {{ voteB.ring }};border-radius:3px;padding:20px;background:var(--card);display:flex;flex-direction:column;gap:14px;transition:border-color 0.3s;">
+                        <sc-if value="{{ voteB.win }}" hint-placeholder-val="{{ false }}"><div style="align-self:center;font:600 12px 'IM Fell English';letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-3);">— the society chooses —</div></sc-if>
+                        <div style="display:flex;gap:16px;">
+                          <div style="width:110px;flex:none;background:var(--plate);padding:7px 7px 9px;border:1px solid var(--plate-line);box-shadow:0 8px 18px -11px rgba(20,15,5,0.55);">
+                            <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                              {{ voteB.coverImg }}
+                              <sc-if value="{{ voteB.noCover }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:9px;"><div style="font:600 9px 'IM Fell English';letter-spacing:0.16em;text-transform:uppercase;color:{{ voteB.tint }};">{{ voteB.genre }}</div><div style="color:var(--rule);margin:4px 0;">❧</div><div style="font-family:'Tangerine';font-weight:700;font-size:17px;line-height:1.05;color:var(--ink);">{{ voteB.title }}</div></div></sc-if>
+                            </div>
+                          </div>
+                          <div style="flex:1;">
+                            <div style="font:600 10.5px 'IM Fell English';letter-spacing:0.16em;text-transform:uppercase;color:{{ voteB.tint }};">{{ voteB.genre }}</div>
+                            <div style="margin-top:5px;font-family:'Tangerine';font-weight:700;font-size:29px;line-height:1.0;color:var(--ink);">{{ voteB.title }}</div>
+                            <div style="margin-top:4px;font:italic 400 16px 'IM Fell English';color:var(--ink-2);">{{ voteB.author }}</div>
+                            <div style="margin-top:3px;font:400 14px 'IM Fell English';color:var(--ink-3);">{{ voteB.meta }}</div>
+                          </div>
+                        </div>
+                        <sc-if value="{{ showTally }}" hint-placeholder-val="{{ true }}">
+                          <div>
+                            <div style="display:flex;align-items:flex-end;gap:4px;height:28px;margin-bottom:6px;">
+                              <sc-for list="{{ voteB.strokes }}" as="s" hint-placeholder-count="4"><span style="width:2px;height:24px;background:var(--accent);margin-left:{{ s.ml }};display:block;"></span></sc-for>
+                              <sc-if value="{{ voteB.noVotes }}" hint-placeholder-val="{{ false }}"><span style="font:italic 400 15px 'IM Fell English';color:var(--ink-4);">no marks yet</span></sc-if>
+                            </div>
+                            <div style="font-family:'Tangerine';font-size:22px;color:var(--ink);"><span style="font-weight:700;">{{ voteB.count }}</span> <span style="color:var(--ink-3);">votes · {{ voteB.pctStr }}</span></div>
+                            <div style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;">
+                              <sc-for list="{{ voteB.voters }}" as="v" hint-placeholder-count="3"><span title="{{ v.name }}" style="width:24px;height:24px;border-radius:999px;background:{{ v.color }};border:1.5px solid rgba(0,0,0,0.2);color:#f2f2f0;font:600 12px/21px 'Tangerine';text-align:center;">{{ v.initials }}</span></sc-for>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ hideTally }}" hint-placeholder-val="{{ false }}"><div style="font:italic 400 15px 'IM Fell English';color:var(--ink-4);">The count is sealed until you cast your vote.</div></sc-if>
+                        <button onClick="{{ voteB.vote }}" style="margin-top:auto;padding:9px 18px;border:1px solid {{ voteB.btnBorder }};border-radius:2px;background:{{ voteB.btnBg }};color:{{ voteB.btnFg }};font-family:'Tangerine';font-weight:700;font-size:20px;cursor:pointer;">{{ voteB.btnLabel }}</button>
+                      </div>
+                    </div>
+
+                    <div style="margin-top:24px;max-width:640px;margin-left:auto;margin-right:auto;">
+                      <sc-if value="{{ isVoting }}" hint-placeholder-val="{{ false }}">
+                        <div style="border:1px solid var(--accent-line);border-radius:3px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--card);">
+                          <div style="font-family:'Tangerine';font-weight:600;font-size:20px;color:var(--ink);">Keeper — seal the ballot to fix the count and name the month's read.</div>
+                          <button onClick="{{ closeVoting }}" style="padding:8px 20px;background:var(--accent);color:var(--on-accent);border:none;border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:19px;cursor:pointer;white-space:nowrap;">Seal the ballot</button>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+                        <div style="border:1.5px solid var(--rule);border-radius:3px;padding:20px 22px;text-align:center;background:var(--card);">
+                          <div style="font:600 12px 'IM Fell English';letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-3);">this month, we read</div>
+                          <div style="margin:6px 0 4px;font-family:'Tangerine';font-weight:700;font-size:33px;line-height:1.0;color:var(--ink);">{{ winner.title }}</div>
+                          <div style="font:italic 400 17px 'IM Fell English';color:var(--ink-2);">{{ winner.author }} · carried {{ tallyStr }}</div>
+                          <button onClick="{{ startNextMonth }}" style="margin-top:16px;padding:9px 26px;background:var(--accent);color:var(--on-accent);border:none;border-radius:2px;font-family:'Tangerine';font-weight:700;font-size:20px;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,0.22);">Begin a new month</button>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <!-- ===== HISTORY ===== -->
+              <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+                <div style="animation:fadeUp 0.5s ease both;max-width:760px;margin:0 auto;">
+                  <div style="display:flex;flex-direction:column;gap:16px;">
+                    <sc-for list="{{ historyViews }}" as="h" hint-placeholder-count="4">
+                      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--hairline);">
+                        <div style="width:58px;flex:none;background:var(--plate);padding:5px 5px 6px;border:1px solid var(--plate-line);box-shadow:0 6px 14px -9px rgba(20,15,5,0.55);transform:rotate(-1.5deg);">
+                          <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+                            {{ h.coverImg }}
+                          </div>
+                        </div>
+                        <div style="flex:1;min-width:180px;">
+                          <div style="font:600 11px 'IM Fell English';letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-4);">{{ h.month }}</div>
+                          <div style="margin-top:3px;font-family:'Tangerine';font-weight:700;font-size:25px;line-height:1.05;color:var(--ink);">{{ h.title }}</div>
+                          <div style="margin-top:2px;font:italic 400 15px 'IM Fell English';color:var(--ink-2);">{{ h.author }} · {{ h.meta }}</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div style="font-family:'Tangerine';font-weight:700;font-size:20px;color:var(--ink);">carried {{ h.tally }}</div>
+                          <div style="font:italic 400 14px 'IM Fell English';color:var(--ink-3);">over {{ h.runnerUp }}</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+            </div>
+
+            <!-- footer -->
+            <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px clamp(20px,4vw,46px) 14px;border-top:1px solid var(--hairline);">
+              <div style="display:flex;gap:clamp(12px,2.4vw,24px);align-items:center;flex-wrap:wrap;">
+                <button onClick="{{ goPool }}" style="background:none;border:none;padding:2px 1px 3px;font-family:'Tangerine';font-weight:600;font-size:22px;color:{{ nav.pool.fg }};border-bottom:2px solid {{ nav.pool.bd }};cursor:pointer;">The table</button>
+                <button onClick="{{ goSubmit }}" style="background:none;border:none;padding:2px 1px 3px;font-family:'Tangerine';font-weight:600;font-size:22px;color:{{ nav.submit.fg }};border-bottom:2px solid {{ nav.submit.bd }};cursor:pointer;">Inscribe</button>
+                <button onClick="{{ goVote }}" style="background:none;border:none;padding:2px 1px 3px;font-family:'Tangerine';font-weight:600;font-size:22px;color:{{ nav.vote.fg }};border-bottom:2px solid {{ nav.vote.bd }};cursor:pointer;">The ballot</button>
+                <button onClick="{{ goHistory }}" style="background:none;border:none;padding:2px 1px 3px;font-family:'Tangerine';font-weight:600;font-size:22px;color:{{ nav.history.fg }};border-bottom:2px solid {{ nav.history.bd }};cursor:pointer;">The record</button>
+              </div>
+              <div style="font:italic 400 16px 'IM Fell English';color:var(--ink-4);white-space:nowrap;">{{ monthLabel }}</div>
+            </div>
+          </div>
+
+          <!-- TURNING LEAF -->
+          <sc-if value="{{ flipActive }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;z-index:20;pointer-events:none;border-radius:2px 4px 4px 2px;animation:leafTurn 0.98s cubic-bezier(0.42,0,0.14,1) forwards, leafLift 0.98s ease-in-out forwards;">
+              <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:2px 4px 4px 2px;">
+                <sc-if value="{{ isPageFlip }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;inset:0;background:var(--paper);display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                    <div style="width:70px;height:70px;border-radius:999px;border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:'Tangerine';font-size:44px;color:var(--ink-3);">{{ clubInitial }}</div>
+                    <div style="margin-top:16px;color:var(--rule);font-size:22px;">❦</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ isOpenFlip }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;inset:0;background:var(--cover-binding);display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:inset 0 0 0 2px var(--cover-line), inset 0 0 90px rgba(0,0,0,0.4);">
+                    <div style="border:1.5px solid var(--cover-line);padding:24px 40px;text-align:center;max-width:80%;">
+                      <h1 style="margin:0;max-width:8em;font-family:'Tangerine';font-weight:700;font-size:clamp(26px,4.5vw,40px);line-height:1.04;color:var(--cover-foil);">{{ clubName }}</h1>
+                      <div style="margin-top:6px;font-family:'Tangerine';font-weight:500;font-size:20px;color:var(--cover-foil-2);">a reading society</div>
+                      <div style="margin-top:12px;color:var(--cover-foil-2);font-size:22px;">❦</div>
+                    </div>
+                  </div>
+                </sc-if>
+                <div style="position:absolute;left:0;top:0;bottom:0;width:44px;background:linear-gradient(90deg,rgba(0,0,0,0.28),rgba(0,0,0,0));"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(0,0,0,0.4),rgba(0,0,0,0) 46%);animation:leafShade 0.98s ease-in-out forwards;"></div>
+              </div>
+              <div style="position:absolute;inset:0;transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:2px 4px 4px 2px;background:var(--paper);">
+                <div style="position:absolute;right:0;top:0;bottom:0;width:44px;background:linear-gradient(270deg,rgba(0,0,0,0.2),rgba(0,0,0,0));"></div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.45;color:var(--rule);font-size:26px;">❦</div>
+                <div style="position:absolute;inset:0;background:linear-gradient(260deg,rgba(0,0,0,0.22),rgba(0,0,0,0) 42%);animation:leafShadeBack 0.98s ease-in-out forwards;"></div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== DRAW OVERLAY ===================== -->
+  <sc-if value="{{ isDrawing }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:70;background:var(--scrim);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px;">
+      <div style="text-align:center;">
+        <div style="font:600 12px 'IM Fell English';letter-spacing:0.24em;text-transform:uppercase;color:var(--foil-2);">drawing the lots</div>
+        <div style="margin-top:6px;font-family:'Tangerine';font-weight:700;font-size:40px;color:var(--foil);">Two are chosen by chance…</div>
+      </div>
+      <div style="display:flex;gap:22px;">
+        <div style="width:140px;animation:flick 0.3s linear infinite;background:var(--plate);padding:8px 8px 10px;border:1px solid var(--plate-line);box-shadow:0 12px 30px rgba(0,0,0,0.5);">
+          <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+            {{ spinA.coverImg }}
+            <sc-if value="{{ spinA.noCover }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:'Tangerine';font-weight:700;font-size:19px;color:var(--ink);">{{ spinA.title }}</div></sc-if>
+          </div>
+        </div>
+        <div style="width:140px;animation:flick 0.3s linear infinite reverse;background:var(--plate);padding:8px 8px 10px;border:1px solid var(--plate-line);box-shadow:0 12px 30px rgba(0,0,0,0.5);">
+          <div style="position:relative;aspect-ratio:2/3;overflow:hidden;background:var(--fallback);">
+            {{ spinB.coverImg }}
+            <sc-if value="{{ spinB.noCover }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:'Tangerine';font-weight:700;font-size:19px;color:var(--ink);">{{ spinB.title }}</div></sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== TOAST ===================== -->
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:30px;transform:translateX(-50%);z-index:90;padding:9px 24px;border-radius:2px;background:var(--toast-bg);border:1px solid var(--binding-line);box-shadow:0 12px 30px rgba(0,0,0,0.5);font-family:'Tangerine';font-weight:600;font-size:20px;color:var(--toast-ink);animation:fadeUp 0.3s ease both;">{{ toast }}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:900},&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;monochrome&quot;,&quot;options&quot;:[&quot;antiquarian&quot;,&quot;monochrome&quot;],&quot;tsType&quot;:&quot;'antiquarian'|'monochrome'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;clubName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;The Smallest Book Club Who Ever Lived&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#7C2D2D&quot;,&quot;options&quot;:[&quot;#7C2D2D&quot;,&quot;#2C4A3A&quot;,&quot;#2E3A55&quot;,&quot;#6B4E86&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;liveTally&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Voting&quot;}}">
+class Component extends DCLogic {
+  members = [
+    { id:'arthur', name:'Arthur', initials:'AR', color:'#5B7FB0', gray:'#4A4A4A' },
+    { id:'emma', name:'Emma', initials:'EM', color:'#C27A8E', gray:'#616161' },
+    { id:'sarah', name:'Sarah', initials:'SA', color:'#7FA96B', gray:'#6E6E6E' },
+    { id:'elza', name:'Elza', initials:'EL', color:'#B07BB0', gray:'#565656' },
+  ];
+  genres = { 'Literary':{tint:'#6D4E86'}, 'Sci-Fi':{tint:'#2F6E68'}, 'Mystery':{tint:'#8A4C63'}, 'Fantasy':{tint:'#9A6B1E'}, 'Nonfiction':{tint:'#4E5A66'} };
+  months = ['July 2026','August 2026','September 2026','October 2026','November 2026','December 2026'];
+
+  empty() { return { title:'', author:'', genre:'Literary', pages:'', year:'', coverUrl:null }; }
+
+  state = {
+    screen:'login', user:null, phase:'suggesting', monthIdx:0,
+    flip:{ active:false, kind:'page' },
+    baseSuggestions:[
+      {id:'b1',title:'The Overstory',author:'Richard Powers',genre:'Literary',pages:625,year:2018,by:'arthur'},
+      {id:'b2',title:'Project Hail Mary',author:'Andy Weir',genre:'Sci-Fi',pages:496,year:2021,by:'emma'},
+      {id:'b3',title:'Pachinko',author:'Min Jin Lee',genre:'Literary',pages:490,year:2017,by:'sarah'},
+      {id:'b4',title:'Piranesi',author:'Susanna Clarke',genre:'Fantasy',pages:245,year:2020,by:'elza'},
+      {id:'b5',title:'The Secret History',author:'Donna Tartt',genre:'Mystery',pages:559,year:1992,by:'arthur'},
+      {id:'b6',title:'Klara and the Sun',author:'Kazuo Ishiguro',genre:'Sci-Fi',pages:303,year:2021,by:'emma'},
+      {id:'b7',title:'Educated',author:'Tara Westover',genre:'Nonfiction',pages:334,year:2018,by:'sarah'},
+      {id:'b8',title:'Circe',author:'Madeline Miller',genre:'Fantasy',pages:393,year:2018,by:'elza'},
+      {id:'b9',title:'Normal People',author:'Sally Rooney',genre:'Literary',pages:266,year:2018,by:'arthur'},
+      {id:'b10',title:'The Three-Body Problem',author:'Cixin Liu',genre:'Sci-Fi',pages:400,year:2008,by:'emma'},
+    ],
+    history:[
+      {month:'June 2026',title:'Tomorrow, and Tomorrow, and Tomorrow',author:'Gabrielle Zevin',genre:'Literary',pages:401,year:2022,tally:'5\u20133',runnerUp:'The Bee Sting'},
+      {month:'May 2026',title:'Babel',author:'R.F. Kuang',genre:'Fantasy',pages:545,year:2022,tally:'6\u20132',runnerUp:'Yellowface'},
+      {month:'April 2026',title:'Sea of Tranquility',author:'Emily St. John Mandel',genre:'Sci-Fi',pages:259,year:2022,tally:'5\u20132',runnerUp:'Cloud Cuckoo Land'},
+      {month:'March 2026',title:'The Wager',author:'David Grann',genre:'Nonfiction',pages:329,year:2023,tally:'4\u20133',runnerUp:'Chip War'},
+    ],
+    mySubs:[], drawn:null, votes:{}, myVote:null, drawSpin:null,
+    form:[{title:'',author:'',genre:'Literary',pages:'',year:'',coverUrl:null},{title:'',author:'',genre:'Literary',pages:'',year:'',coverUrl:null}],
+    search:{}, toast:null,
+  };
+
+  async componentDidMount() {
+    this.loadCovers(this.state.baseSuggestions, 'baseSuggestions');
+    this.loadCovers(this.state.history, 'history');
+  }
+  async loadCovers(list, key) {
+    const out = await Promise.all(list.map(async (b) => {
+      if (b.coverUrl) return b;
+      try {
+        const q = new URLSearchParams({ title:b.title, author:b.author||'', limit:'1', fields:'cover_i' });
+        const r = await fetch('https://openlibrary.org/search.json?' + q);
+        const j = await r.json();
+        const id = j.docs && j.docs[0] && j.docs[0].cover_i;
+        return id ? { ...b, coverUrl:`https://covers.openlibrary.org/b/id/${id}-L.jpg` } : b;
+      } catch (e) { return b; }
+    }));
+    this.setState({ [key]: out });
+  }
+
+  memberById(id) { return this.members.find(m => m.id === id); }
+  bookById(id) { return this.state.baseSuggestions.concat(this.state.mySubs).find(b => b.id === id); }
+  sealColor(m) { if (!m) return this.themeMono ? '#5a5a5a' : '#9B8C7A'; return this.themeMono ? (m.gray || '#5a5a5a') : m.color; }
+
+  makeCoverImg(url) {
+    if (!url) return null;
+    const style = { position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' };
+    if (this.themeMono) style.filter = 'grayscale(1) contrast(1.03)';
+    return React.createElement('img', { src:url, alt:'', style, onError:(e) => { e.target.style.display = 'none'; } });
+  }
+  bookView(b, i) {
+    const tilt = (i == null) ? 0 : ((i % 2 ? 1.3 : -1.3) + ((i % 3) - 1) * 0.35);
+    if (!b) return { title:'', author:'', genre:'Literary', tint:'#8A7455', meta:'', hasCover:false, noCover:true, coverUrl:null, coverImg:null, tilt, by:{name:'',initials:'?',color:this.sealColor(null)} };
+    const m = this.memberById(b.by);
+    const meta = [ b.pages ? b.pages + ' pp' : null, b.year || null ].filter(Boolean).join(' \u00b7 ');
+    const tint = this.themeMono ? '#6E6E6E' : ((this.genres[b.genre]||{}).tint || '#8A7455');
+    return { ...b, tint, meta, tilt,
+      hasCover: !!b.coverUrl, noCover: !b.coverUrl, coverUrl: b.coverUrl || null, coverImg:this.makeCoverImg(b.coverUrl),
+      by: m ? {name:m.name, initials:m.initials, color:this.sealColor(m)} : {name:b.by, initials:'?', color:this.sealColor(null)} };
+  }
+  mapGenre(subjects) {
+    const s = (subjects || []).join(' ').toLowerCase();
+    if (/science fiction|sci-fi|dystopia|space opera/.test(s)) return 'Sci-Fi';
+    if (/fantasy|magic|mythology|dragons/.test(s)) return 'Fantasy';
+    if (/mystery|detective|crime|thriller|suspense/.test(s)) return 'Mystery';
+    if (/biography|autobiography|history|nonfiction|non-fiction|essays|memoir|politics|economics/.test(s)) return 'Nonfiction';
+    return 'Literary';
+  }
+
+  turnTo(screen, kind) {
+    if (this.state.flip.active) { this.setState({ screen }); return; }
+    this.setState({ screen, flip:{ active:true, kind:kind || 'page' } });
+    clearTimeout(this._flip);
+    this._flip = setTimeout(() => this.setState(s => ({ flip:{ ...s.flip, active:false } })), 980);
+  }
+  signIn(m) { this.setState({ user:m }); this.turnTo('pool', 'open'); }
+  signOut() { clearTimeout(this._flip); this.setState({ screen:'login', user:null, flip:{ active:false, kind:'page' } }); }
+
+  setForm(slot, field, val) {
+    this.setState(s => ({ form: s.form.map((x,i) => i===slot ? { ...x, [field]:val, ...(field==='title' ? {coverUrl:null} : {}) } : x) }));
+  }
+  setSearch(slot, patch) {
+    this.setState(s => ({ search: { ...s.search, [slot]: { ...(s.search[slot]||{}), ...patch } } }));
+  }
+  toastMsg(msg) {
+    this.setState({ toast:msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast:null }), 2800);
+  }
+
+  async searchBook(slot) {
+    const title = this.state.form[slot].title.trim();
+    if (!title) { this.toastMsg('Name a title first, then look it up.'); return; }
+    this.setSearch(slot, { loading:true, open:true, results:[], error:null });
+    try {
+      const q = new URLSearchParams({ title, limit:'6', fields:'title,author_name,first_publish_year,cover_i,number_of_pages_median,subject' });
+      const r = await fetch('https://openlibrary.org/search.json?' + q);
+      const j = await r.json();
+      const results = (j.docs || []).map(d => ({
+        title:d.title, author:(d.author_name||[])[0] || 'Unknown', year:d.first_publish_year || '',
+        pages:d.number_of_pages_median || '', coverId:d.cover_i || null, subject:d.subject || [],
+      }));
+      this.setSearch(slot, { loading:false, open:true, results, error: results.length ? null : 'No entry found — you may write it in by hand.' });
+    } catch (e) {
+      this.setSearch(slot, { loading:false, open:true, results:[], error:'The register could not be reached — write it in by hand.' });
+    }
+  }
+  chooseResult(slot, r) {
+    const genre = this.mapGenre(r.subject);
+    this.setState(s => ({
+      form: s.form.map((x,i) => i===slot ? { title:r.title, author:r.author, genre, pages:r.pages || '', year:r.year || '', coverUrl: r.coverId ? `https://covers.openlibrary.org/b/id/${r.coverId}-L.jpg` : null } : x),
+      search: { ...s.search, [slot]: { ...(s.search[slot]||{}), open:false } },
+    }));
+  }
+
+  submitPicks() {
+    const [a,b] = this.state.form;
+    if (!a.title.trim() || !a.author.trim() || !b.title.trim() || !b.author.trim()) {
+      this.toastMsg('Give a title and author for both volumes.'); return;
+    }
+    const uid = this.state.user.id;
+    const mk = (x,i) => ({ id:'me'+Date.now()+i, title:x.title.trim(), author:x.author.trim(), genre:x.genre||'Literary', pages:Number(x.pages)||0, year:Number(x.year)||2026, by:uid, coverUrl:x.coverUrl||null });
+    this.setState({ mySubs:[mk(a,0), mk(b,1)] });
+    this.turnTo('pool', 'page');
+    this.toastMsg('Your two volumes are entered in the ledger.');
+  }
+  pickTwo(pool) {
+    const a = [...pool];
+    for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; }
+    return [a[0], a[1]];
+  }
+  runDraw() {
+    const pool = this.state.baseSuggestions.concat(this.state.mySubs);
+    if (pool.length < 2) { this.toastMsg('At least two volumes are needed to draw.'); return; }
+    const first = this.pickTwo(pool);
+    this.setState({ drawSpin:[first[0].id, first[1].id] });
+    let ticks = 0;
+    clearInterval(this._draw);
+    this._draw = setInterval(() => {
+      ticks++;
+      const p = this.pickTwo(pool);
+      this.setState({ drawSpin:[p[0].id, p[1].id] });
+      if (ticks >= 12) {
+        clearInterval(this._draw);
+        const [x,y] = this.pickTwo(pool);
+        const votes = { [x.id]:[], [y.id]:[] };
+        this.members.forEach(m => {
+          if (this.state.user && m.id === this.state.user.id) return;
+          if (Math.random() < 0.7) { (Math.random() < 0.5 ? votes[x.id] : votes[y.id]).push(m.id); }
+        });
+        this.setState({ drawn:[x.id, y.id], votes, phase:'voting', drawSpin:null, myVote:null });
+        this.turnTo('vote', 'page');
+        this.toastMsg('Two volumes drawn \u2014 the ballot is open.');
+      }
+    }, 140);
+  }
+  castVote(id) {
+    if (!this.state.drawn) return;
+    const uid = this.state.user.id;
+    const votes = {};
+    this.state.drawn.forEach(d => { votes[d] = (this.state.votes[d]||[]).filter(x => x !== uid); });
+    votes[id] = [...votes[id], uid];
+    this.setState({ votes, myVote:id });
+    this.toastMsg('Your mark is entered.');
+  }
+  closeVoting() { this.setState({ phase:'result' }); this.toastMsg('The ballot is sealed.'); }
+  startNextMonth() {
+    const S = this.state;
+    if (!S.drawn) return;
+    const [ia,ib] = S.drawn;
+    const ca = (S.votes[ia]||[]).length, cb = (S.votes[ib]||[]).length;
+    const wId = ca >= cb ? ia : ib, lId = wId === ia ? ib : ia;
+    const wc = Math.max(ca,cb), lc = Math.min(ca,cb);
+    const w = this.bookById(wId), l = this.bookById(lId);
+    const entry = { month:this.months[S.monthIdx], title:w.title, author:w.author, genre:w.genre, pages:w.pages, year:w.year, coverUrl:w.coverUrl||null, tally:`${wc}\u2013${lc}`, runnerUp:l.title };
+    this.setState(s => ({ history:[entry, ...s.history], monthIdx:Math.min(s.monthIdx+1, this.months.length-1), phase:'suggesting', drawn:null, votes:{}, myVote:null, mySubs:[], form:[this.empty(), this.empty()] }));
+    this.turnTo('pool', 'page');
+    this.toastMsg('A new month opens \u2014 offerings are welcome.');
+  }
+
+  hexToRgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+  }
+  buildTheme(palette, accentProp) {
+    const mono = palette === 'monochrome';
+    const accent = mono ? '#1F1F1F' : accentProp;
+    const warmDesk = 'radial-gradient(1100px 640px at 50% -12%, rgba(245,196,120,0.20), rgba(27,18,12,0) 60%), radial-gradient(900px 520px at 50% 118%, rgba(150,86,38,0.12), rgba(27,18,12,0) 58%), #1B120C';
+    const base = mono ? {
+      binding:'linear-gradient(120deg,#2b2b2d,#171719 58%,#101012)', bindingLine:'rgba(220,220,224,0.42)',
+      ribbon:'linear-gradient(180deg,#4c4c4e,#232325)', foil:'#E8E8EA', foil2:'#C4C4C7',
+      paper:'radial-gradient(120% 90% at 82% 12%, rgba(255,255,255,0.7), rgba(0,0,0,0) 46%), linear-gradient(100deg,#EDEDEA 0%,#F5F5F2 12%,#FAFAF8 46%,#F0F0ED 100%)',
+      spine:'linear-gradient(90deg,rgba(0,0,0,0.13),rgba(0,0,0,0))', edge:'#E4E4E1',
+      plate:'#FBFBF9', plateLine:'#CFCFCF', card:'rgba(255,255,255,0.5)',
+      fallback:'linear-gradient(165deg,#ECECEC,#D9D9D9)', tape:'rgba(120,120,120,0.22)',
+      ink:'#1A1A1A', ink2:'#4C4C4C', ink3:'#6E6E6E', ink4:'#8A8A8A',
+      rule:'#9C9C9C', hairline:'#DADADA', navOff:'#5A5A5A',
+      onAccent:'#FFFFFF', toastBg:'#1B1B1C', toastInk:'#EAEAEA', scrim:'rgba(12,12,14,0.93)',
+      openDesk:'radial-gradient(1100px 640px at 50% -12%, rgba(255,255,255,0.05), rgba(12,12,14,0) 60%), #0D0D0F',
+      coverBinding:'linear-gradient(120deg,#2E4E44,#213A31 55%,#18302A)', coverLine:'rgba(201,162,75,0.55)',
+      coverRibbon:'linear-gradient(180deg,#A63E36,#6E221E)', coverFoil:'#EBD08A', coverFoil2:'#ECD9A6',
+      coverDesk:'radial-gradient(1150px 660px at 50% -14%, rgba(233,190,120,0.22), rgba(16,20,23,0) 58%), radial-gradient(950px 560px at 50% 122%, rgba(44,92,80,0.20), rgba(16,20,23,0) 60%), #101417',
+    } : {
+      binding:'linear-gradient(120deg,#662623,#54201E 58%,#4a1a18)', bindingLine:'rgba(201,162,75,0.5)',
+      ribbon:'linear-gradient(180deg,#8C2F2C,#661F1D)', foil:'#E7C878', foil2:'#E4CB95',
+      paper:'radial-gradient(120% 90% at 82% 12%, rgba(255,250,235,0.6), rgba(0,0,0,0) 46%), linear-gradient(100deg,#E7D8B8 0%,#EFE3C8 12%,#F3E9D2 46%,#EFE3C6 100%)',
+      spine:'linear-gradient(90deg,rgba(90,50,20,0.22),rgba(90,50,20,0))', edge:'#E0D0AE',
+      plate:'#F5ECD6', plateLine:'#CDA766', card:'rgba(255,250,235,0.5)',
+      fallback:'linear-gradient(165deg,#ECDFC4,#E1D0AE)', tape:'rgba(201,162,75,0.34)',
+      ink:'#2E2013', ink2:'#6B5B44', ink3:'#8A7455', ink4:'#9C7B4B',
+      rule:'#C9A24B', hairline:'#D6C39A', navOff:'#6B4E2E',
+      onAccent:'#F5ECD6', toastBg:'#3A2016', toastInk:'#F0DDA9', scrim:'rgba(20,13,8,0.92)',
+      openDesk:warmDesk,
+      coverBinding:'linear-gradient(120deg,#662623,#54201E 58%,#4a1a18)', coverLine:'rgba(201,162,75,0.5)',
+      coverRibbon:'linear-gradient(180deg,#8C2F2C,#661F1D)', coverFoil:'#E7C878', coverFoil2:'#E4CB95',
+      coverDesk:warmDesk,
+    };
+    return { ...base, accent, accentLine:this.hexToRgba(accent,0.4), accentWash:this.hexToRgba(accent,0.08), mono };
+  }
+
+  renderVals() {
+    const S = this.state;
+    const palette = this.props.palette ?? 'monochrome';
+    const t = this.buildTheme(palette, this.props.accent ?? '#7C2D2D');
+    this.themeMono = t.mono;
+    const clubName = this.props.clubName ?? 'The Smallest Book Club Who Ever Lived';
+    const liveTally = this.props.liveTally ?? true;
+    const clubInitial = (clubName || 'L').trim().charAt(0).toUpperCase();
+
+    const V = {
+      '--binding':t.binding, '--binding-line':t.bindingLine, '--ribbon':t.ribbon,
+      '--foil':t.foil, '--foil-2':t.foil2, '--paper':t.paper, '--spine':t.spine, '--edge':t.edge,
+      '--plate':t.plate, '--plate-line':t.plateLine, '--card':t.card, '--fallback':t.fallback, '--tape':t.tape,
+      '--ink':t.ink, '--ink-2':t.ink2, '--ink-3':t.ink3, '--ink-4':t.ink4, '--rule':t.rule, '--hairline':t.hairline, '--nav-off':t.navOff,
+      '--on-accent':t.onAccent, '--toast-bg':t.toastBg, '--toast-ink':t.toastInk, '--scrim':t.scrim,
+      '--accent':t.accent, '--accent-line':t.accentLine, '--accent-wash':t.accentWash,
+      '--cover-binding':t.coverBinding, '--cover-line':t.coverLine, '--cover-ribbon':t.coverRibbon, '--cover-foil':t.coverFoil, '--cover-foil-2':t.coverFoil2,
+    };
+    const themeVars = Object.entries(V).map(([k,v]) => `${k}:${v}`).join(';') + ';';
+
+    const monthLabel = this.months[S.monthIdx];
+    const pool = S.baseSuggestions.concat(S.mySubs);
+    const poolViews = pool.map((b,i) => this.bookView(b,i));
+    const mySubsViews = S.mySubs.map((b,i) => this.bookView(b,i));
+    const poolCount = pool.length;
+    const mySubsCount = S.mySubs.length;
+
+    const screen = S.screen, phase = S.phase;
+    const deskBg = screen === 'login' ? t.coverDesk : t.openDesk;
+    const isSuggesting = phase === 'suggesting', isVoting = phase === 'voting', isResult = phase === 'result';
+
+    const phaseIdx = { suggesting:0, voting:1, result:2 }[phase];
+    const steps = [{num:'I',label:'offer'},{num:'II',label:'ballot'},{num:'III',label:'record'}].map((st,i) => ({ ...st, fg: i === phaseIdx ? 'var(--accent)' : 'var(--ink-4)' }));
+    const navItem = (k) => screen === k ? { fg:'var(--accent)', bd:'var(--accent)' } : { fg:'var(--nav-off)', bd:'transparent' };
+    const nav = { pool:navItem('pool'), submit:navItem('submit'), vote:navItem('vote'), history:navItem('history') };
+
+    let voteA = null, voteB = null, totalVotes = 0, winner = null, loser = null, tallyStr = '';
+    if (S.drawn) {
+      totalVotes = (S.votes[S.drawn[0]]||[]).length + (S.votes[S.drawn[1]]||[]).length;
+      const mkVote = (id) => {
+        const bv = this.bookView(this.bookById(id));
+        const voters = (S.votes[id]||[]).map(v => this.memberById(v)).filter(Boolean).map(m => ({ name:m.name, initials:m.initials, color:this.sealColor(m) }));
+        const count = voters.length;
+        const pct = totalVotes ? Math.round(count/totalVotes*100) : 0;
+        const mine = S.myVote === id;
+        const strokes = Array.from({ length:count }, (_,i) => ({ ml: (i>0 && i%5===0) ? '10px' : '4px' }));
+        return { ...bv, count, pct, pctStr:pct+'%', voters, mine, strokes, noVotes: count === 0,
+          btnLabel: mine ? 'Your vote is cast' : 'Cast your vote',
+          btnBg: mine ? 'var(--accent)' : 'transparent', btnFg: mine ? 'var(--on-accent)' : 'var(--accent)', btnBorder:'var(--accent)',
+          win:false, ring:'var(--plate-line)' };
+      };
+      voteA = mkVote(S.drawn[0]);
+      voteB = mkVote(S.drawn[1]);
+      if (isResult) {
+        if (voteA.count === voteB.count) { winner = voteA; loser = voteB; voteA.win = true; voteB.win = true; }
+        else { winner = voteA.count > voteB.count ? voteA : voteB; loser = winner === voteA ? voteB : voteA; winner.win = true; }
+        tallyStr = `${winner.count}\u2013${loser.count}`;
+      }
+      voteA.ring = (voteA.win || voteA.mine) ? 'var(--accent)' : 'var(--plate-line)';
+      voteB.ring = (voteB.win || voteB.mine) ? 'var(--accent)' : 'var(--plate-line)';
+    }
+    const showTally = liveTally || !!S.myVote;
+
+    const isDrawing = !!S.drawSpin;
+    const spinA = isDrawing ? this.bookView(this.bookById(S.drawSpin[0])) : null;
+    const spinB = isDrawing ? this.bookView(this.bookById(S.drawSpin[1])) : null;
+
+    let phaseSub = '';
+    if (isSuggesting) phaseSub = `${poolCount} volumes rest on the table · you have offered ${mySubsCount} of 2`;
+    else if (isVoting) phaseSub = `${totalVotes} of ${this.members.length} marks have been cast`;
+    else phaseSub = winner ? `${winner.title} carries the month` : 'The month is settled';
+
+    const chapters = {
+      pool: { eyebrow: monthLabel, title: "This Month's Table" },
+      submit: { eyebrow: 'your contributions', title: 'Inscribe Two Volumes' },
+      vote: { eyebrow: monthLabel, title: 'The Ballot' },
+      history: { eyebrow: 'since the first gathering', title: 'The Record' },
+    };
+    const chap = chapters[screen] || chapters.pool;
+
+    const f0 = S.form[0], f1 = S.form[1];
+    const preview = (f) => ({ title:f.title || 'Untitled', author:f.author || 'Author unknown', genre:f.genre, tint: this.themeMono ? '#6E6E6E' : (this.genres[f.genre]||{}).tint, hasCover:!!f.coverUrl, noCover:!f.coverUrl, coverUrl:f.coverUrl || null, coverImg:this.makeCoverImg(f.coverUrl) });
+    const mk = (slot,field) => (e) => this.setForm(slot, field, e.target.value);
+    const key = (slot) => (e) => { if (e.key === 'Enter') { e.preventDefault(); this.searchBook(slot); } };
+    const h = {
+      s0title:mk(0,'title'), s0author:mk(0,'author'), s0genre:mk(0,'genre'), s0pages:mk(0,'pages'), s0year:mk(0,'year'), s0key:key(0),
+      s1title:mk(1,'title'), s1author:mk(1,'author'), s1genre:mk(1,'genre'), s1pages:mk(1,'pages'), s1year:mk(1,'year'), s1key:key(1),
+    };
+    const mkSearch = (slot) => {
+      const st = S.search[slot] || {};
+      const results = (st.results || []).map((r) => {
+        const cu = r.coverId ? `https://covers.openlibrary.org/b/id/${r.coverId}-M.jpg` : null;
+        return { title:r.title, meta:[r.author, r.year].filter(Boolean).join(' \u00b7 '),
+          hasCover: !!r.coverId, noCover: !r.coverId, coverUrl: cu, coverImg:this.makeCoverImg(cu), choose:() => this.chooseResult(slot, r) };
+      });
+      return { open: !!st.open, loading: !!st.loading, error: st.error || null, hasError: !!st.error, results };
+    };
+
+    const historyViews = S.history.map(e => ({ ...e, tint: this.themeMono ? '#6E6E6E' : (this.genres[e.genre]||{}).tint,
+      hasCover: !!e.coverUrl, noCover: !e.coverUrl, coverUrl: e.coverUrl || null, coverImg:this.makeCoverImg(e.coverUrl),
+      meta: [ e.pages ? e.pages+' pp' : null, e.year ].filter(Boolean).join(' \u00b7 ') }));
+
+    const u = S.user, flip = S.flip;
+
+    return {
+      clubName, clubInitial, themeVars, deskBg,
+      isLogin: screen === 'login', showChrome: screen !== 'login',
+      isPool: screen === 'pool', isSubmit: screen === 'submit', isVote: screen === 'vote', isHistory: screen === 'history',
+      memberCards: this.members.map(m => ({ ...m, seal:this.sealColor(m), signIn:() => this.signIn(m) })),
+      userName: u ? u.name : '', userInitials: u ? u.initials : '', userColor: this.sealColor(u),
+      monthLabel, chapterEyebrow: chap.eyebrow, chapterTitle: chap.title, phaseSub, steps, nav,
+      isSuggesting, isVoting, isResult,
+      poolViews, poolCount, mySubsViews, mySubsCount,
+      hasMySubs: mySubsCount > 0, noMySubs: mySubsCount === 0,
+      hasDrawn: !!S.drawn, noDrawn: !S.drawn,
+      voteA, voteB, totalVotes, winner, tallyStr, showTally, hideTally: !showTally,
+      isDrawing, spinA, spinB,
+      f0, f1, previewA:preview(f0), previewB:preview(f1), h, genreList:Object.keys(this.genres),
+      sch0:mkSearch(0), sch1:mkSearch(1), searchBtn0:() => this.searchBook(0), searchBtn1:() => this.searchBook(1),
+      historyViews,
+      flipActive: flip.active, isOpenFlip: flip.active && flip.kind === 'open', isPageFlip: flip.active && flip.kind !== 'open',
+      toast:S.toast, hasToast: !!S.toast,
+      goPool:() => this.turnTo('pool'), goSubmit:() => this.turnTo('submit'), goVote:() => this.turnTo('vote'), goHistory:() => this.turnTo('history'),
+      signOut:() => this.signOut(), runDraw:() => this.runDraw(), closeVoting:() => this.closeVoting(),
+      submitPicks:() => this.submitPicks(), startNextMonth:() => this.startNextMonth(),
+    };
+  }
+}
+</script>
+</body>
+</html>

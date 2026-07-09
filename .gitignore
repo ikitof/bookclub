@@ -31,3 +31,4 @@ npm-debug.log*
 # Design-canvas artifacts (the source lives in design/)
 /.thumbnail
 design/bookclub.zip
+design/uploads/
