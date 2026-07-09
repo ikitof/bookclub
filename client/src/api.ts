@@ -8,7 +8,7 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(body?.error || `Request failed (${res.status})`);
+    throw new Error(body?.error || `Échec de la requête (${res.status})`);
   }
   if (res.status === 204) return null as T;
   return res.json() as Promise<T>;
@@ -45,18 +45,33 @@ export interface OpenLibraryResult {
   subject: string[];
 }
 
+/**
+ * Open Library's `first_publish_year` is occasionally polluted by a single
+ * phantom edition dated decades before the real first printing (e.g. Elif
+ * Batuman's "The Idiot" reports 1969 for a 2017 book). Drop an isolated early
+ * outlier and take the start of the real cluster of edition years.
+ */
+function cleanYear(firstPublishYear?: number, publishYears?: number[]): number | '' {
+  const years = (publishYears ?? [])
+    .filter((y): y is number => typeof y === 'number' && y > 1000)
+    .sort((a, b) => a - b);
+  if (!years.length) return firstPublishYear && firstPublishYear > 1000 ? firstPublishYear : '';
+  if (years.length > 1 && years[1] - years[0] > 25) return years[1];
+  return years[0];
+}
+
 export async function searchOpenLibrary(title: string): Promise<OpenLibraryResult[]> {
   const q = new URLSearchParams({
     title,
     limit: '6',
-    fields: 'title,author_name,first_publish_year,cover_i,number_of_pages_median,subject',
+    fields: 'title,author_name,first_publish_year,publish_year,cover_i,number_of_pages_median,subject',
   });
   const res = await fetch(`${OL}?${q}`);
   const data = (await res.json()) as { docs?: Record<string, unknown>[] };
   return (data.docs || []).map((d) => ({
     title: String(d.title ?? ''),
-    author: (Array.isArray(d.author_name) ? (d.author_name[0] as string) : '') || 'Unknown',
-    year: (d.first_publish_year as number) || '',
+    author: (Array.isArray(d.author_name) ? (d.author_name[0] as string) : '') || 'Auteur inconnu',
+    year: cleanYear(d.first_publish_year as number | undefined, d.publish_year as number[] | undefined),
     pages: (d.number_of_pages_median as number) || '',
     coverId: (d.cover_i as number) || null,
     subject: (d.subject as string[]) || [],
