@@ -1,0 +1,27 @@
+# Installed / built artifacts (rebuilt inside the image)
+node_modules
+**/node_modules
+dist
+**/dist
+client/dist
+server/dist
+
+# Runtime data & local env
+data
+server/data
+*.db
+*.db-*
+*.sqlite
+.env
+.env.*
+
+# VCS, design source, docs, editor cruft
+.git
+.gitignore
+design
+*.md
+.thumbnail
+.vscode
+.idea
+.DS_Store
+npm-debug.log*

@@ -1,0 +1,39 @@
+# Everything configurable lives in .env (copy .env.example -> .env).
+# Values below fall back to sensible defaults if .env is absent.
+
+services:
+  lamplight:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION:-20-alpine}
+    image: lamplight:${IMAGE_TAG:-latest}
+    container_name: ${CONTAINER_NAME:-lamplight}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-8787}
+      DB_PATH: ${DB_PATH:-/data/bookclub.db}
+      # true behind HTTPS, false when reached over plain HTTP (e.g. by IP)
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      - "${HOST_PORT:-8787}:${PORT:-8787}"
+    volumes:
+      # SQLite database persists here across container rebuilds.
+      # Default: managed Docker volume. Set DATA_PATH to an absolute host path
+      # to bind-mount instead (e.g. DATA_PATH=/srv/lamplight/data).
+      - ${DATA_PATH:-lamplight-data}:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:'+(process.env.PORT||8787)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  lamplight-data:
