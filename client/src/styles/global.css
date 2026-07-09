@@ -1,0 +1,158 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  color: #1c1c1c;
+  font-family: 'IM Fell English', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  background: #0d0d0f;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  opacity: 0.8;
+}
+
+input,
+select,
+button,
+textarea {
+  font-family: 'IM Fell English', serif;
+}
+
+::placeholder {
+  color: var(--ink-4);
+  font-style: italic;
+  font-family: 'IM Fell English', serif;
+}
+
+select option {
+  background: var(--plate);
+  color: var(--ink);
+  font-family: 'IM Fell English', serif;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-line);
+  border-radius: 999px;
+}
+
+/* --- interaction helpers (the design's style-hover / style-focus) --- */
+
+.lp-plate {
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 0.25s ease;
+}
+.lp-plate:hover {
+  transform: rotate(0deg) translateY(-4px);
+}
+
+.lp-member {
+  transition: background 0.2s, transform 0.2s;
+}
+.lp-member:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  transform: translateY(-3px);
+}
+
+.lp-field {
+  transition: border-color 0.2s;
+}
+.lp-field:focus {
+  border-bottom-color: var(--accent) !important;
+}
+
+.lp-result {
+  transition: background 0.12s;
+}
+.lp-result:hover {
+  background: var(--accent-wash);
+}
+
+.lp-link:hover {
+  opacity: 0.75;
+}
+
+/* --- keyframes --- */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes flick {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.86;
+  }
+}
+@keyframes spinnerRot {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes leafTurn {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+@keyframes leafLift {
+  0% {
+    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+  }
+  45% {
+    filter: drop-shadow(-26px 18px 30px rgba(0, 0, 0, 0.4));
+  }
+  100% {
+    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+  }
+}
+@keyframes leafShade {
+  0% {
+    opacity: 0.14;
+  }
+  32% {
+    opacity: 0.52;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes leafShadeBack {
+  0% {
+    opacity: 0;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.16;
+  }
+}
