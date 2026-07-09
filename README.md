@@ -33,7 +33,34 @@ npm start       # one Node process serves the API and the built client on :8787
 ```
 
 The SQLite database is created on first run at `server/data/bookclub.db`.
-Set `PORT` to change the port and `DB_PATH` to move the database file.
+
+## Docker
+
+Everything is configured through `.env` — copy the template and bring it up:
+
+```bash
+cp .env.example .env      # adjust ports / paths if you like
+docker compose up --build -d
+```
+
+Then browse to `http://localhost:${HOST_PORT}` (8787 by default). The image is a
+multi-stage build that compiles the client and server and runs as a non-root user;
+the SQLite database lives on a named volume (`lamplight-data`) so it survives
+rebuilds. Stop with `docker compose down` (add `-v` to also wipe the database).
+
+## Configuration
+
+No values are hardcoded — the server reads its configuration from the environment,
+and `docker compose` reads everything from `.env` (see `.env.example`):
+
+| Variable        | Default             | Purpose                                              |
+| --------------- | ------------------- | ---------------------------------------------------- |
+| `PORT`          | `8787`              | Port the server listens on                           |
+| `HOST_PORT`     | `8787`              | Host port published by Compose                       |
+| `DB_PATH`       | `/data/bookclub.db` | SQLite file location (on the volume, in Docker)      |
+| `NODE_ENV`      | `production`        | Set to `development` for local dev                   |
+| `COOKIE_SECURE` | `false` in Compose  | `true` behind HTTPS, `false` over plain HTTP         |
+| `NODE_VERSION`  | `20-alpine`         | Node base image for the build                        |
 
 ## The monthly cycle
 
