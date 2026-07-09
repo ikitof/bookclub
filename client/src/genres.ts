@@ -1,12 +1,17 @@
-export const GENRES: Record<string, { tint: string }> = {
-  Literary: { tint: '#6D4E86' },
-  'Sci-Fi': { tint: '#2F6E68' },
-  Mystery: { tint: '#8A4C63' },
-  Fantasy: { tint: '#9A6B1E' },
-  Nonfiction: { tint: '#4E5A66' },
+// Keys are canonical (stored in the database); labels are shown in French.
+export const GENRES: Record<string, { tint: string; label: string }> = {
+  Literary: { tint: '#6D4E86', label: 'Littérature' },
+  'Sci-Fi': { tint: '#2F6E68', label: 'Science-fiction' },
+  Mystery: { tint: '#8A4C63', label: 'Policier' },
+  Fantasy: { tint: '#9A6B1E', label: 'Fantasy' },
+  Nonfiction: { tint: '#4E5A66', label: 'Essais' },
 };
 
 export const GENRE_LIST = Object.keys(GENRES);
+
+export function genreLabel(genre: string | null): string {
+  return (genre && GENRES[genre]?.label) || genre || 'Littérature';
+}
 
 export function genreTint(genre: string | null, mono: boolean): string {
   if (mono) return '#6E6E6E';

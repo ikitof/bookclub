@@ -5,23 +5,23 @@ import { sealColor } from '../view';
 import { PageFlip } from './PageFlip';
 
 const CHAPTERS: Record<Exclude<Screen, 'login'>, { eyebrowFixed?: string; title: string }> = {
-  pool: { title: "This Month's Table" },
-  submit: { eyebrowFixed: 'your contributions', title: 'Inscribe Two Volumes' },
-  vote: { title: 'The Ballot' },
-  history: { eyebrowFixed: 'since the first gathering', title: 'The Record' },
+  pool: { title: 'La table du mois' },
+  submit: { eyebrowFixed: 'vos contributions', title: 'Inscrivez deux volumes' },
+  vote: { title: 'Le scrutin' },
+  history: { eyebrowFixed: 'depuis la première réunion', title: 'Le registre' },
 };
 
 const NAV: { key: Screen; label: string }[] = [
-  { key: 'pool', label: 'The table' },
-  { key: 'submit', label: 'Inscribe' },
-  { key: 'vote', label: 'The ballot' },
-  { key: 'history', label: 'The record' },
+  { key: 'pool', label: 'La table' },
+  { key: 'submit', label: 'Inscrire' },
+  { key: 'vote', label: 'Le scrutin' },
+  { key: 'history', label: 'Le registre' },
 ];
 
 export function Book({ club, children }: { club: Club; children: ReactNode }) {
   const { snapshot, me, screen, mono } = club;
   const monthLabel = snapshot?.club.monthLabel ?? '';
-  const clubName = snapshot?.club.name ?? 'Lamplight';
+  const clubName = snapshot?.club.name ?? 'The Smallest Book Club Who Ever Lived';
   const chapter = screen === 'login' ? CHAPTERS.pool : CHAPTERS[screen];
   const eyebrow = chapter.eyebrowFixed ?? monthLabel;
 
@@ -70,7 +70,7 @@ export function Book({ club, children }: { club: Club; children: ReactNode }) {
             {/* running head */}
             <div style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '16px clamp(20px,4vw,46px) 0' }}>
               <span style={{ font: "500 12.5px/1 'IM Fell English'", letterSpacing: '0.26em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>
-                {clubName} · A Reading Society
+                {clubName}
               </span>
               {me && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
@@ -96,7 +96,7 @@ export function Book({ club, children }: { club: Club; children: ReactNode }) {
                       className="lp-link"
                       style={{ background: 'none', border: 'none', padding: 0, font: "italic 400 13px 'IM Fell English'", color: 'var(--ink-4)', cursor: 'pointer' }}
                     >
-                      close the book
+                      refermer le livre
                     </button>
                   </div>
                 </div>

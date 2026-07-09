@@ -25,10 +25,10 @@ export function DrawOverlay({ club }: { club: Club }) {
     >
       <div style={{ textAlign: 'center' }}>
         <div style={{ font: "600 12px 'IM Fell English'", letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--foil-2)' }}>
-          drawing the lots
+          tirage au sort
         </div>
         <div style={{ marginTop: 6, fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 40, color: 'var(--foil)' }}>
-          Two are chosen by chance…
+          Deux volumes choisis par le hasard…
         </div>
       </div>
       <div style={{ display: 'flex', gap: 22 }}>

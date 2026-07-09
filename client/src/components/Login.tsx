@@ -8,7 +8,7 @@ interface Props {
 
 export function Login({ club }: Props) {
   const { snapshot, theme } = club;
-  const clubName = snapshot?.club.name ?? 'Lamplight';
+  const clubName = snapshot?.club.name ?? 'The Smallest Book Club Who Ever Lived';
   const members = snapshot?.members ?? [];
 
   return (
@@ -73,17 +73,6 @@ export function Login({ club }: Props) {
           >
             {clubName}
           </h1>
-          <div
-            style={{
-              marginTop: 10,
-              fontFamily: "'Tangerine'",
-              fontWeight: 500,
-              fontSize: 'clamp(19px,3.4vw,26px)',
-              color: 'var(--cover-foil-2)',
-            }}
-          >
-            a reading society
-          </div>
           <div style={{ margin: '18px auto 8px', color: 'var(--cover-foil-2)', fontSize: 22 }}>❦</div>
           <div
             style={{
@@ -94,7 +83,7 @@ export function Login({ club }: Props) {
               marginBottom: 18,
             }}
           >
-            This volume belongs to
+            Ce volume appartient à
           </div>
           <div
             style={{
@@ -152,7 +141,7 @@ export function Login({ club }: Props) {
               color: 'var(--cover-foil-2)',
             }}
           >
-            Open the cover to begin · Est. 2026
+            Ouvrez la couverture pour commencer · Fondé en 2026
           </div>
         </div>
       </div>

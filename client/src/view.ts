@@ -1,4 +1,4 @@
-import { genreTint } from './genres';
+import { genreLabel, genreTint } from './genres';
 import type { Book, Member } from './types';
 
 /** Stable key for caching a cover by title/author across cycles. */
@@ -46,7 +46,7 @@ export function bookView(
     id: book.id,
     title: book.title,
     author: book.author,
-    genre: book.genre,
+    genre: genreLabel(book.genre),
     tint: genreTint(book.genre, mono),
     meta: metaLine(book.pages, book.year),
     tilt: tiltFor(index),

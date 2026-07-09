@@ -2,7 +2,7 @@ import { useState, type CSSProperties } from 'react';
 import type { Club } from '../useClub';
 import type { Draft } from '../types';
 import type { BookView } from '../view';
-import { GENRE_LIST, genreTint, mapGenre } from '../genres';
+import { GENRE_LIST, genreLabel, genreTint, mapGenre } from '../genres';
 import { api, coverUrlFor, searchOpenLibrary, type OpenLibraryResult } from '../api';
 import { CoverBox } from './CoverBox';
 
@@ -34,9 +34,9 @@ const field: CSSProperties = {
 function previewView(d: Draft, mono: boolean): BookView {
   return {
     id: 'preview',
-    title: d.title || 'Untitled',
-    author: d.author || 'Author unknown',
-    genre: d.genre,
+    title: d.title || 'Sans titre',
+    author: d.author || 'Auteur inconnu',
+    genre: genreLabel(d.genre),
     tint: genreTint(d.genre, mono),
     meta: '',
     tilt: 0,
@@ -81,7 +81,7 @@ function VolumeForm({
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <label style={label}>Title</label>
+          <label style={label}>Titre</label>
           <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
             <input
               className="lp-field"
@@ -93,7 +93,7 @@ function VolumeForm({
                   onSearch();
                 }
               }}
-              placeholder="name a book…"
+              placeholder="nommez un livre…"
               style={{ ...field, flex: 1, minWidth: 0, font: "500 19px 'IM Fell English'" }}
             />
             <button
@@ -112,7 +112,7 @@ function VolumeForm({
                 whiteSpace: 'nowrap',
               }}
             >
-              Look it up
+              Rechercher
             </button>
           </div>
         </div>
@@ -144,7 +144,7 @@ function VolumeForm({
                     animation: 'spinnerRot 0.7s linear infinite',
                   }}
                 />
-                Consulting the register…
+                Consultation du registre…
               </div>
             )}
             {search.error && (
@@ -214,12 +214,12 @@ function VolumeForm({
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <label style={label}>Author</label>
+          <label style={label}>Auteur</label>
           <input
             className="lp-field"
             value={draft.author}
             onChange={(e) => onField('author', e.target.value)}
-            placeholder="by whom…"
+            placeholder="de qui…"
             style={{ ...field, width: '100%', font: "italic 500 18px 'IM Fell English'" }}
           />
         </div>
@@ -235,7 +235,7 @@ function VolumeForm({
             >
               {GENRE_LIST.map((g) => (
                 <option key={g} value={g}>
-                  {g}
+                  {genreLabel(g)}
                 </option>
               ))}
             </select>
@@ -252,7 +252,7 @@ function VolumeForm({
             />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 80 }}>
-            <label style={label}>Year</label>
+            <label style={label}>Année</label>
             <input
               className="lp-field"
               type="number"
@@ -304,7 +304,7 @@ export function Submit({ club }: { club: Club }) {
   const runSearch = async (slot: 0 | 1) => {
     const title = drafts[slot].title.trim();
     if (!title) {
-      club.showToast('Name a title first, then look it up.');
+      club.showToast('Nommez d’abord un titre, puis lancez la recherche.');
       return;
     }
     patchSearch(slot, { open: true, loading: true, results: [], error: null });
@@ -313,10 +313,10 @@ export function Submit({ club }: { club: Club }) {
       patchSearch(slot, {
         loading: false,
         results,
-        error: results.length ? null : 'No entry found — you may write it in by hand.',
+        error: results.length ? null : 'Aucune entrée trouvée — inscrivez-le à la main.',
       });
     } catch {
-      patchSearch(slot, { loading: false, results: [], error: 'The register could not be reached — write it in by hand.' });
+      patchSearch(slot, { loading: false, results: [], error: 'Registre injoignable — inscrivez-le à la main.' });
     }
   };
 
@@ -339,7 +339,7 @@ export function Submit({ club }: { club: Club }) {
   const submit = async () => {
     const [a, b] = drafts;
     if (!a.title.trim() || !a.author.trim() || !b.title.trim() || !b.author.trim()) {
-      club.showToast('Give a title and author for both volumes.');
+      club.showToast('Donnez un titre et un auteur pour les deux volumes.');
       return;
     }
     const toSubmit = (d: Draft) => ({
@@ -354,9 +354,9 @@ export function Submit({ club }: { club: Club }) {
       const snap = await api.suggestions([toSubmit(a), toSubmit(b)]);
       club.applySnapshot(snap);
       club.turnTo('pool');
-      club.showToast('Your two volumes are entered in the ledger.');
+      club.showToast('Vos deux volumes sont inscrits au registre.');
     } catch (err) {
-      club.showToast(err instanceof Error ? err.message : 'The ledger refused the entry.');
+      club.showToast(err instanceof Error ? err.message : 'Le registre a refusé l’inscription.');
     }
   };
 
@@ -374,12 +374,12 @@ export function Submit({ club }: { club: Club }) {
           color: 'var(--ink-2)',
         }}
       >
-        Name a volume and press <span style={{ color: 'var(--accent)', fontWeight: 700 }}>Look it up</span> — the register
-        fetches its plate, author and length. Or write it in by hand.
+        Nommez un volume et pressez <span style={{ color: 'var(--accent)', fontWeight: 700 }}>Rechercher</span> — le
+        registre en tire la couverture, l’auteur et la longueur. Ou inscrivez-le à la main.
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 26 }}>
         <VolumeForm
-          eyebrow="the first volume"
+          eyebrow="le premier volume"
           draft={drafts[0]}
           search={searches[0]}
           mono={mono}
@@ -388,7 +388,7 @@ export function Submit({ club }: { club: Club }) {
           onChoose={(r) => choose(0, r)}
         />
         <VolumeForm
-          eyebrow="the second volume"
+          eyebrow="le second volume"
           draft={drafts[1]}
           search={searches[1]}
           mono={mono}
@@ -413,10 +413,10 @@ export function Submit({ club }: { club: Club }) {
             boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.22)',
           }}
         >
-          Enter both in the ledger
+          Inscrire les deux au registre
         </button>
         <div style={{ marginTop: 9, font: "italic 400 14px 'IM Fell English'", color: 'var(--ink-4)' }}>
-          Entering again replaces your current two.
+          Une nouvelle inscription remplace vos deux volumes actuels.
         </div>
       </div>
     </div>

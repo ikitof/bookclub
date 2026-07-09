@@ -22,7 +22,7 @@ function VoteCard({ side, mono, showTally, onVote }: { side: VoteSide; mono: boo
     >
       {side.win && (
         <div style={{ alignSelf: 'center', font: "600 12px 'IM Fell English'", letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>
-          — the society chooses —
+          — la société choisit —
         </div>
       )}
       <div style={{ display: 'flex', gap: 16 }}>
@@ -56,10 +56,10 @@ function VoteCard({ side, mono, showTally, onVote }: { side: VoteSide; mono: boo
             {side.strokes.map((s, i) => (
               <span key={i} style={{ width: 2, height: 24, background: 'var(--accent)', marginLeft: s.ml, display: 'block' }} />
             ))}
-            {side.noVotes && <span style={{ font: "italic 400 15px 'IM Fell English'", color: 'var(--ink-4)' }}>no marks yet</span>}
+            {side.noVotes && <span style={{ font: "italic 400 15px 'IM Fell English'", color: 'var(--ink-4)' }}>aucune voix</span>}
           </div>
           <div style={{ fontFamily: "'Tangerine'", fontSize: 22, color: 'var(--ink)' }}>
-            <span style={{ fontWeight: 700 }}>{side.count}</span> <span style={{ color: 'var(--ink-3)' }}>votes · {side.pctStr}</span>
+            <span style={{ fontWeight: 700 }}>{side.count}</span> <span style={{ color: 'var(--ink-3)' }}>voix · {side.pctStr}</span>
           </div>
           <div style={{ marginTop: 10, display: 'flex', gap: 5, flexWrap: 'wrap' }}>
             {side.voters.map((v, i) => (
@@ -84,7 +84,7 @@ function VoteCard({ side, mono, showTally, onVote }: { side: VoteSide; mono: boo
         </div>
       ) : (
         <div style={{ font: "italic 400 15px 'IM Fell English'", color: 'var(--ink-4)' }}>
-          The count is sealed until you cast your vote.
+          Le décompte est scellé jusqu’à votre vote.
         </div>
       )}
 
@@ -103,7 +103,7 @@ function VoteCard({ side, mono, showTally, onVote }: { side: VoteSide; mono: boo
           cursor: 'pointer',
         }}
       >
-        {side.mine ? 'Your vote is cast' : 'Cast your vote'}
+        {side.mine ? 'Votre voix est donnée' : 'Voter'}
       </button>
     </div>
   );
@@ -119,26 +119,26 @@ export function Vote({ club }: { club: Club }) {
   const cast = async (bookId: string) => {
     try {
       club.applySnapshot(await api.vote(bookId));
-      club.showToast('Your mark is entered.');
+      club.showToast('Votre voix est enregistrée.');
     } catch (err) {
-      club.showToast(err instanceof Error ? err.message : 'Your mark could not be entered.');
+      club.showToast(err instanceof Error ? err.message : 'Votre voix n’a pas pu être enregistrée.');
     }
   };
   const seal = async () => {
     try {
       club.applySnapshot(await api.seal());
-      club.showToast('The ballot is sealed.');
+      club.showToast('Le scrutin est scellé.');
     } catch (err) {
-      club.showToast(err instanceof Error ? err.message : 'The ballot could not be sealed.');
+      club.showToast(err instanceof Error ? err.message : 'Le scrutin n’a pas pu être scellé.');
     }
   };
   const nextMonth = async () => {
     try {
       club.applySnapshot(await api.nextMonth());
       club.turnTo('pool');
-      club.showToast('A new month opens — offerings are welcome.');
+      club.showToast('Un nouveau mois s’ouvre — les propositions sont les bienvenues.');
     } catch (err) {
-      club.showToast(err instanceof Error ? err.message : 'A new month could not be opened.');
+      club.showToast(err instanceof Error ? err.message : 'Un nouveau mois n’a pas pu être ouvert.');
     }
   };
 
@@ -148,10 +148,10 @@ export function Vote({ club }: { club: Club }) {
         <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: 520, margin: '0 auto' }}>
           <div style={{ color: 'var(--rule)', fontSize: 26 }}>❦</div>
           <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 30, color: 'var(--ink)', margin: '8px 0' }}>
-            The lots are not yet drawn
+            Les sorts ne sont pas encore tirés
           </div>
           <div style={{ fontFamily: "'Tangerine'", fontWeight: 500, fontSize: 20, lineHeight: 1.35, color: 'var(--ink-2)', marginBottom: 22 }}>
-            Two volumes are drawn by lot once the month's offerings are in. The keeper holds the drawing from the table.
+            Deux volumes sont tirés au sort une fois les propositions du mois réunies. Le gardien procède au tirage depuis la table.
           </div>
           <button
             onClick={() => club.turnTo('pool')}
@@ -167,7 +167,7 @@ export function Vote({ club }: { club: Club }) {
               cursor: 'pointer',
             }}
           >
-            Back to the table
+            Retour à la table
           </button>
         </div>
       </div>
@@ -179,7 +179,7 @@ export function Vote({ club }: { club: Club }) {
       <div style={{ display: 'flex', gap: 22, alignItems: 'stretch', justifyContent: 'center', flexWrap: 'wrap' }}>
         <VoteCard side={ballot.voteA} mono={club.mono} showTally={showTally} onVote={() => void cast(ballot.voteA.id)} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Tangerine'", fontWeight: 500, fontSize: 32, color: 'var(--ink-4)' }}>
-          or
+          ou
         </div>
         <VoteCard side={ballot.voteB} mono={club.mono} showTally={showTally} onVote={() => void cast(ballot.voteB.id)} />
       </div>
@@ -200,7 +200,7 @@ export function Vote({ club }: { club: Club }) {
             }}
           >
             <div style={{ fontFamily: "'Tangerine'", fontWeight: 600, fontSize: 20, color: 'var(--ink)' }}>
-              Keeper — seal the ballot to fix the count and name the month's read.
+              Gardien — scellez le scrutin pour arrêter le décompte et désigner la lecture du mois.
             </div>
             <button
               onClick={() => void seal()}
@@ -217,20 +217,20 @@ export function Vote({ club }: { club: Club }) {
                 whiteSpace: 'nowrap',
               }}
             >
-              Seal the ballot
+              Sceller le scrutin
             </button>
           </div>
         )}
         {phase === 'result' && (
           <div style={{ border: '1.5px solid var(--rule)', borderRadius: 3, padding: '20px 22px', textAlign: 'center', background: 'var(--card)' }}>
             <div style={{ font: "600 12px 'IM Fell English'", letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>
-              this month, we read
+              ce mois-ci, nous lisons
             </div>
             <div style={{ margin: '6px 0 4px', fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 33, lineHeight: 1.0, color: 'var(--ink)' }}>
               {ballot.winner?.title}
             </div>
             <div style={{ font: "italic 400 17px 'IM Fell English'", color: 'var(--ink-2)' }}>
-              {ballot.winner?.author} · carried {ballot.tallyStr}
+              {ballot.winner?.author} · l’emporte {ballot.tallyStr}
             </div>
             <button
               onClick={() => void nextMonth()}
@@ -248,7 +248,7 @@ export function Vote({ club }: { club: Club }) {
                 boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.22)',
               }}
             >
-              Begin a new month
+              Commencer un nouveau mois
             </button>
           </div>
         )}

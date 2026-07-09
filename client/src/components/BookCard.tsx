@@ -43,7 +43,7 @@ export function BookCard({ view, mono, showOfferedBy = false }: Props) {
                 {view.by.initials}
               </span>
               <span style={{ font: "italic 400 13.5px 'IM Fell English'", color: 'var(--ink-3)' }}>
-                offered by {view.by.name}
+                proposé par {view.by.name}
               </span>
             </div>
           )}

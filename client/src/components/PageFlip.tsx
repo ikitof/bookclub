@@ -3,7 +3,7 @@ import type { Club } from '../useClub';
 export function PageFlip({ club }: { club: Club }) {
   const { flip, snapshot } = club;
   if (!flip.active) return null;
-  const clubName = snapshot?.club.name ?? 'Lamplight';
+  const clubName = snapshot?.club.name ?? 'The Smallest Book Club Who Ever Lived';
   const clubInitial = (clubName || 'L').trim().charAt(0).toUpperCase();
   const isOpen = flip.kind === 'open';
 
@@ -57,9 +57,6 @@ export function PageFlip({ club }: { club: Club }) {
               >
                 {clubName}
               </h1>
-              <div style={{ marginTop: 6, fontFamily: "'Tangerine'", fontWeight: 500, fontSize: 20, color: 'var(--cover-foil-2)' }}>
-                a reading society
-              </div>
               <div style={{ marginTop: 12, color: 'var(--cover-foil-2)', fontSize: 22 }}>❦</div>
             </div>
           </div>

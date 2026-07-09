@@ -5,8 +5,8 @@ import { bookView, coverKey, type BookView } from './view';
 import type { Book, Member, Screen, Snapshot } from './types';
 import type { CSSProperties } from 'react';
 
-const PALETTE_KEY = 'lamplight.palette';
-const ACCENT_KEY = 'lamplight.accent';
+const PALETTE_KEY = 'bookclub.palette';
+const ACCENT_KEY = 'bookclub.accent';
 const FLIP_MS = 980;
 
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -194,7 +194,7 @@ export function useClub(): Club {
     if (!snapshot) return;
     const ids = snapshot.pool.map((b) => b.id);
     if (ids.length < 2) {
-      showToast('At least two volumes are needed to draw.');
+      showToast('Il faut au moins deux volumes pour tirer au sort.');
       return;
     }
     setDrawSpin(randomPair(ids));
@@ -204,10 +204,10 @@ export function useClub(): Club {
       const snap = await api.draw();
       await delay(Math.max(0, 1500 - (Date.now() - started)));
       setSnapshot(snap);
-      showToast('Two volumes drawn — the ballot is open.');
+      showToast('Deux volumes tirés — le scrutin est ouvert.');
       turnTo('vote', 'page');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'The draw could not be held.');
+      showToast(err instanceof Error ? err.message : 'Le tirage n’a pas pu avoir lieu.');
     } finally {
       clearInterval(spin);
       setDrawSpin(null);

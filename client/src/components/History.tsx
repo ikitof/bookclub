@@ -63,9 +63,9 @@ export function History({ club }: { club: Club }) {
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 20, color: 'var(--ink)' }}>carried {h.tally}</div>
+                <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 20, color: 'var(--ink)' }}>l’emporte {h.tally}</div>
                 {h.runnerUp && (
-                  <div style={{ font: "italic 400 14px 'IM Fell English'", color: 'var(--ink-3)' }}>over {h.runnerUp}</div>
+                  <div style={{ font: "italic 400 14px 'IM Fell English'", color: 'var(--ink-3)' }}>devant {h.runnerUp}</div>
                 )}
               </div>
             </div>

@@ -33,17 +33,17 @@ export function Pool({ club }: { club: Club }) {
   const mySubs = me ? pool.filter((b) => b.by === me.id) : [];
   const phaseIdx = { suggesting: 0, voting: 1, result: 2 }[phase];
   const steps = [
-    { num: 'I', label: 'offer' },
-    { num: 'II', label: 'ballot' },
-    { num: 'III', label: 'record' },
+    { num: 'I', label: 'offrande' },
+    { num: 'II', label: 'scrutin' },
+    { num: 'III', label: 'registre' },
   ];
 
   const ballot = phase === 'suggesting' ? null : deriveBallot(snapshot, club);
   const totalVotes = ballot?.totalVotes ?? 0;
   let phaseSub: string;
-  if (phase === 'suggesting') phaseSub = `${pool.length} volumes rest on the table · you have offered ${mySubs.length} of 2`;
-  else if (phase === 'voting') phaseSub = `${totalVotes} of ${snapshot.members.length} marks have been cast`;
-  else phaseSub = ballot?.winner ? `${ballot.winner.title} carries the month` : 'The month is settled';
+  if (phase === 'suggesting') phaseSub = `${pool.length} volumes reposent sur la table · vous en avez proposé ${mySubs.length} sur 2`;
+  else if (phase === 'voting') phaseSub = `${totalVotes} voix sur ${snapshot.members.length} ont été exprimées`;
+  else phaseSub = ballot?.winner ? `${ballot.winner.title} l’emporte ce mois-ci` : 'Le mois est décidé';
 
   const gridCols = 'repeat(auto-fill,minmax(150px,1fr))';
 
@@ -81,7 +81,7 @@ export function Pool({ club }: { club: Club }) {
         {phaseSub}
       </p>
 
-      <SectionHead title="Your two volumes" count={`${mySubs.length} of 2`} />
+      <SectionHead title="Vos deux volumes" count={`${mySubs.length} sur 2`} />
       {mySubs.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: 26 }}>
           {mySubs.map((b, i) => (
@@ -104,14 +104,14 @@ export function Pool({ club }: { club: Club }) {
         >
           <div>
             <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 26, color: 'var(--ink)' }}>
-              Your leaf in the ledger is blank
+              Votre feuillet dans le registre est vierge
             </div>
             <div style={{ font: "italic 400 17px 'IM Fell English'", color: 'var(--ink-2)', marginTop: 3 }}>
-              Inscribe two volumes before the drawing is held.
+              Inscrivez deux volumes avant le tirage au sort.
             </div>
           </div>
           <button onClick={() => club.turnTo('submit')} style={{ ...btnAccent, padding: '9px 24px', fontSize: 21 }}>
-            Inscribe your volumes
+            Inscrire vos volumes
           </button>
         </div>
       )}
@@ -133,17 +133,17 @@ export function Pool({ club }: { club: Club }) {
         >
           <div>
             <div style={{ font: "600 11px 'IM Fell English'", letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>
-              the keeper's office
+              le bureau du gardien
             </div>
             <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 25, color: 'var(--ink)', marginTop: 4 }}>
-              Hold this month's drawing
+              Procéder au tirage du mois
             </div>
             <div style={{ font: "italic 400 16px 'IM Fell English'", color: 'var(--ink-2)' }}>
-              Draw two volumes from the table, by lot, for the society to weigh.
+              Tirez deux volumes de la table, au sort, pour que la société les départage.
             </div>
           </div>
           <button onClick={() => void club.draw()} style={{ ...btnAccent, padding: '10px 26px', fontSize: 22 }}>
-            Draw the lots
+            Tirer au sort
           </button>
         </div>
       )}
@@ -163,7 +163,7 @@ export function Pool({ club }: { club: Club }) {
           }}
         >
           <div style={{ fontFamily: "'Tangerine'", fontWeight: 600, fontSize: 22, color: 'var(--ink)' }}>
-            The lots are drawn — the ballot is open.
+            Les sorts sont tirés — le scrutin est ouvert.
           </div>
           <button
             onClick={() => club.turnTo('vote')}
@@ -180,7 +180,7 @@ export function Pool({ club }: { club: Club }) {
               whiteSpace: 'nowrap',
             }}
           >
-            To the ballot
+            Au scrutin
           </button>
         </div>
       )}
@@ -200,15 +200,15 @@ export function Pool({ club }: { club: Club }) {
           }}
         >
           <div style={{ fontFamily: "'Tangerine'", fontWeight: 600, fontSize: 22, color: 'var(--ink)' }}>
-            The vote is settled for {monthLabel}.
+            Le vote est clos pour {monthLabel}.
           </div>
           <button onClick={() => club.turnTo('vote')} style={{ ...btnAccent, padding: '8px 22px', fontSize: 20 }}>
-            See the chosen volume
+            Voir le volume élu
           </button>
         </div>
       )}
 
-      <SectionHead title="On the table this month" count={`${pool.length} volumes`} />
+      <SectionHead title="Sur la table ce mois-ci" count={`${pool.length} volumes`} />
       <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: 26 }}>
         {pool.map((b, i) => (
           <BookCard key={b.id} view={club.view(b, i)} mono={theme.mono} showOfferedBy />

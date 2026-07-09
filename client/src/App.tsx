@@ -32,7 +32,7 @@ export function App() {
       <div style={{ textAlign: 'center', maxWidth: 420 }}>
         <div style={{ color: 'var(--foil-2)', fontSize: 26 }}>❦</div>
         <div style={{ fontFamily: "'Tangerine'", fontWeight: 700, fontSize: 30, color: 'var(--foil)', margin: '8px 0' }}>
-          The register could not be reached
+          Registre injoignable
         </div>
         <div style={{ font: "italic 400 16px 'IM Fell English'", color: 'var(--foil-2)' }}>{loadError}</div>
       </div>
