@@ -74,6 +74,30 @@ and `docker compose` reads everything from `.env` (see `.env.example`):
 
 Votes and the pool are shared across everyone in real time over SSE — no page refresh needed.
 
+## Importing an existing club's history
+
+Bring past reads into the record ("Le registre"). Write a JSON file — only
+`month` and `title` are required per entry; author, cover, page count, year and
+genre are filled in from Open Library (see `server/history.import.example.json`):
+
+```json
+[
+  { "month": "octobre 2025", "title": "The Idiot", "author": "Elif Batuman" },
+  { "month": "novembre 2025", "title": "Bonjour tristesse" }
+]
+```
+
+Then run it (stop the server first, or restart it afterwards so it re-reads the database):
+
+```bash
+npm run import:history -w server -- --file path/to/history.json --replace
+```
+
+- `--replace` clears the record first — use it to drop the demo entries and start clean.
+- Without it, entries already present (same month + title) are skipped, so it's safe to re-run.
+- Months accept French or English names (`octobre 2025`, `October 2025`) or numeric forms (`2025-10`).
+- Point `DB_PATH` at the same database the server uses. Entries sort chronologically by month, so old reads slot in correctly.
+
 ## Project layout
 
 ```
